@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->text('location');
             $table->string('phone');
+            $table->string('email')->nullable();
             $table->text('iframe')->nullable();
             $table->integer('view')->default(config('base.view.show'));
             $table->timestamps();

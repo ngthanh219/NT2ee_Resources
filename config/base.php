@@ -5,7 +5,8 @@ return [
         'admin' => 0,
         'manage' => 1,
         'staff' => 2,
-        'customer' => 3
+        'customer' => 3,
+        'all' => 4
     ],
     'view' => [
         'show' => 0,
@@ -25,5 +26,10 @@ return [
         'qr' => 0,
         'ship_cod' => 1,
         'online' => 2
-    ]
+    ],
+    'noti' => [
+        'success' => 0,
+        'error' => 1
+    ],
+    'pagination' => 15
 ];

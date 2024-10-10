@@ -12,6 +12,7 @@ class Store extends Model
     protected $fillable = [
         'location',
         'phone',
+        'email',
         'iframe',
         'view'
     ];

@@ -36,6 +36,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'role_name'
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -44,4 +48,27 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getRoleNameAttribute()
+    {
+        switch ($this->role_id) {
+            case config('base.role_id.admin'):
+                return 'Tài khoản admin';
+                break;
+
+            case config('base.role_id.manage'):
+                return 'Tài khoản quản lý';
+                break;
+
+            case config('base.role_id.staff'):
+                return 'Tài khoản nhân viên';
+                break;
+
+            case config('base.role_id.customer'): 
+                return 'Tài khoản khách hàng';
+                break;
+        }
+
+        return 'Tài khoản khách hàng';
+    }
 }
