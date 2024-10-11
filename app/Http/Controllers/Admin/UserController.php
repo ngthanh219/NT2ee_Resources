@@ -3,64 +3,73 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
-        $pageName = 'Thông tin người dùng';
-        $users = User::orderByDesc('id');
+        try {
+            $pageName = 'Thông tin người dùng';
+            $users = User::orderByDesc('id');
 
-        if (isset($request->key)) {
-            $users->where(function ($query) use ($request) {
-                return $query->where('name', 'like', "%$request->key%")
-                    ->orWhere('email', 'like', "%$request->key%")
-                    ->orWhere('phone', 'like', "%$request->key%");
-            });
+            if (isset($request->key)) {
+                $users->where(function ($query) use ($request) {
+                    return $query->where('name', 'like', "%$request->key%")
+                        ->orWhere('email', 'like', "%$request->key%")
+                        ->orWhere('phone', 'like', "%$request->key%");
+                });
+            }
+
+            if (isset($request->role_id) && $request->role_id != config('base.role_id.all')) {
+                $users->where('role_id', $request->role_id);
+            }
+
+            $users = $users->paginate(config('base.pagination'));
+
+            $compact = [
+                'pageName',
+                'request',
+                'users'
+            ];
+
+            return view('admin.user.index', compact($compact));
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
         }
-
-        if (isset($request->role_id) && $request->role_id != config('base.role_id.all')) {
-            $users->where('role_id', $request->role_id);
-        }
-
-        $users = $users->paginate(config('base.pagination'));
-
-        $compact = [
-            'pageName',
-            'request',
-            'users'
-        ];
-
-        return view('admin.user.index', compact($compact));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        try {
+            $pageName = 'Thêm thông tin';
+            $compact = [
+                'pageName',
+                'request'
+            ];
+
+            return view('admin.user.create', compact($compact));
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
+        try {
+            $data = $request->all();
+            $data['password'] = bcrypt($data['password']);
+            User::create($data);
+
+            return redirect()->route('users.index')->with('noti', [
+                'type' => config('base.noti.success'),
+                'message' => 'Lưu thành công'
+            ]);
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
+        }
     }
 
     /**

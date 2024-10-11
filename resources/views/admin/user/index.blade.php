@@ -6,6 +6,7 @@
                 <h3>
                     {{ $pageName }}
                 </h3>
+                <a href="{{ route('users.create') }}" class="btn btn-primary">Thêm thông tin</a>
             </div>
 
             <div class="title_right">
@@ -29,11 +30,20 @@
                     <div class="x_title">
                         <label class="control-label">Loại tài khoản</label>
                         <select class="form-control" onchange="location = this.value;">
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.all')] + $request->all()) }}">Tất cả</option>
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.admin')] + $request->all()) }}" {{ isset($request->role_id) && $request->role_id ==  config('base.role_id.admin') ? 'selected' : ''}}>Admin</option>
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.manage')] + $request->all()) }}" {{ isset($request->role_id) && $request->role_id ==  config('base.role_id.manage') ? 'selected' : ''}}>Quản lý</option>
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.staff')] + $request->all()) }}" {{ isset($request->role_id) && $request->role_id ==  config('base.role_id.staff') ? 'selected' : ''}}>Nhân viên</option>
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.customer')] + $request->all()) }}" {{ isset($request->role_id) && $request->role_id ==  config('base.role_id.customer') ? 'selected' : ''}}>Khách hàng</option>
+                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.all')]) }}">
+                                Tất cả</option>
+                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.admin')]) }}"
+                                {{ isset($request->role_id) && $request->role_id == config('base.role_id.admin') ? 'selected' : '' }}>
+                                Admin</option>
+                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.manage')]) }}"
+                                {{ isset($request->role_id) && $request->role_id == config('base.role_id.manage') ? 'selected' : '' }}>
+                                Quản lý</option>
+                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.staff')]) }}"
+                                {{ isset($request->role_id) && $request->role_id == config('base.role_id.staff') ? 'selected' : '' }}>
+                                Nhân viên</option>
+                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.customer')]) }}"
+                                {{ isset($request->role_id) && $request->role_id == config('base.role_id.customer') ? 'selected' : '' }}>
+                                Khách hàng</option>
                         </select>
                         <div class="clearfix"></div>
                     </div>
@@ -54,32 +64,55 @@
                                     </tr>
                                 </thead>
 
-                                <tbody>
-                                    @foreach ($users as $user)
-                                        <tr class="even pointer">
-                                            <td>{{ $user->id }}</td>
-                                            <td>{{ $user->name }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->role_name }}</td>
-                                            <td>{{ $user->phone }}</td>
-                                            <td>
-                                                <a href="{{ route('users.edit', $user->id) }}"
-                                                    class="btn btn-primary btn-sm">
-                                                    Chỉnh sửa
-                                                </a>
-                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST">
-                                                    @method('DELETE')
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-danger btn-sm"
-                                                        onClick="return confirm('Bạn có chắc chắn muốn xóa')">
-                                                        Xóa
-                                                    </button>
-                                                </form>
-                                            </td>
+                                @if (count($users))
+                                    <tbody>
+                                        @foreach ($users as $user)
+                                            <tr class="even pointer">
+                                                <td>{{ $user->id }}</td>
+                                                <td>{{ $user->name }}</td>
+                                                <td>{{ $user->email }}</td>
+                                                <td>{{ $user->role_name }}</td>
+                                                <td>{{ $user->phone }}</td>
+                                                <td>
+                                                    <a href="{{ route('users.edit', $user->id) }}"
+                                                        class="btn btn-primary btn-sm">
+                                                        Chỉnh sửa
+                                                    </a>
+                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                                        @method('DELETE')
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            onClick="return confirm('Bạn có chắc chắn muốn xóa')">
+                                                            Xóa
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                @else
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="6" class="text-center">Không có dữ liệu</td>
                                         </tr>
-                                    @endforeach
-                                </tbody>
+                                    </tbody>
+                                @endif
                             </table>
+                            <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
+                                <ul class="pagination">
+                                    @foreach ($users->links()->elements[0] as $key => $item)
+                                        @if ($users->links()->paginator->currentPage() == $key)
+                                            <li class="active">
+                                                <a>{{ $key }}</a>
+                                            </li>
+                                        @else
+                                            <li>
+                                                <a href="{{ $item }}">{{ $key }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -89,5 +122,4 @@
 @endsection
 
 @section('script')
-    
 @endsection
