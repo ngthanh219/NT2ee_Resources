@@ -17,6 +17,8 @@
             @include('admin.layout.sidebar')
 
             @include('admin.layout.header')
+            
+            @include('admin.layout.noti')
 
             <div class="right_col" role="main">
                 @yield('index')

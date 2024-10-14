@@ -6,12 +6,13 @@
                 <h3>
                     {{ $pageName }}
                 </h3>
-                <a href="{{ route('users.create') }}" class="btn btn-primary">Thêm thông tin</a>
+                <a href="{{ route('categories.create', isset($request->parent_id) ? ['parent_id' => $request->parent_id] : []) }}"
+                    class="btn btn-primary">Thêm thông tin</a>
             </div>
 
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 form-group pull-right top_search">
-                    <form class="input-group" method="GET" action="{{ route('users.index') }}">
+                    <form class="input-group" method="GET" action="{{ route('categories.index') }}">
                         @foreach ($request->all() as $key => $item)
                             @if ($key != 'key')
                                 <input type="hidden" name="{{ $key }}" value="{{ $item }}">
@@ -30,31 +31,45 @@
         <div class="clearfix"></div>
 
         <div class="row" style="display: block;">
-            <div class="col-md-12 col-sm-12  ">
+            <div class="col-md-12 col-sm-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <label class="control-label">Loại tài khoản</label>
-                        <select class="form-control" onchange="location = this.value;">
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.all')] + $request->all()) }}">
-                                Tất cả
-                            </option>
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.admin')] + $request->all()) }}"
-                                {{ isset($request->role_id) && $request->role_id == config('base.role_id.admin') ? 'selected' : '' }}>
-                                Admin
-                            </option>
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.manage')] + $request->all()) }}"
-                                {{ isset($request->role_id) && $request->role_id == config('base.role_id.manage') ? 'selected' : '' }}>
-                                Quản lý
-                            </option>
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.staff')] + $request->all()) }}"
-                                {{ isset($request->role_id) && $request->role_id == config('base.role_id.staff') ? 'selected' : '' }}>
-                                Nhân viên
-                            </option>
-                            <option value="{{ route('users.index', ['role_id' => config('base.role_id.customer')] + $request->all()) }}"
-                                {{ isset($request->role_id) && $request->role_id == config('base.role_id.customer') ? 'selected' : '' }}>
-                                Khách hàng
-                            </option>
-                        </select>
+                        <div class="col-sm-4 pl-0">
+                            <label class="control-label">Danh mục cha</label>
+                            <select class="form-control" onchange="location = this.value;">
+                                <option
+                                    value="{{ route('categories.index', ['parent_id' => config('base.parent_category_default')] + $request->all()) }}">
+                                    Tất cả
+                                </option>
+
+                                @foreach ($parentCategories as $parentCategory)
+                                    <option
+                                        value="{{ route('categories.index', ['parent_id' => $parentCategory->id] + $request->all()) }}"
+                                        {{ isset($request->parent_id) && $request->parent_id == $parentCategory->id ? 'selected' : '' }}>
+                                        {{ $parentCategory->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="control-label">Trạng thái hiển thị</label>
+                            <select class="form-control" onchange="location = this.value;">
+                                <option
+                                    value="{{ route('categories.index', ['view' => config('base.view.all')] + $request->all()) }}">
+                                    Tất cả
+                                </option>
+                                <option
+                                    value="{{ route('categories.index', ['view' => config('base.view.show')] + $request->all()) }}"
+                                    {{ isset($request->view) && $request->view == config('base.view.show') ? 'selected' : '' }}>
+                                    Đang hiển thị
+                                </option>
+                                <option
+                                    value="{{ route('categories.index', ['view' => config('base.view.hidden')] + $request->all()) }}"
+                                    {{ isset($request->view) && $request->view == config('base.view.hidden') ? 'selected' : '' }}>
+                                    Đang ẩn
+                                </option>
+                            </select>
+                        </div>
                         <div class="clearfix"></div>
                     </div>
 
@@ -64,31 +79,34 @@
                                 <thead>
                                     <tr class="headings">
                                         <th class="column-title">ID</th>
-                                        <th class="column-title">Tên đầy đủ</th>
-                                        <th class="column-title">Email</th>
-                                        <th class="column-title">Loại tài khoản</th>
-                                        <th class="column-title">Số điện thoại</th>
+                                        <th class="column-title">Tên danh mục</th>
+                                        <th class="column-title">Trạng thái hiển thị</th>
                                         <th class="column-title no-link last">
                                             <span class="nobr">Hành động</span>
                                         </th>
                                     </tr>
                                 </thead>
 
-                                @if (count($users))
+                                @if (count($categories))
                                     <tbody>
-                                        @foreach ($users as $user)
+                                        @foreach ($categories as $category)
                                             <tr class="even pointer">
-                                                <td>{{ $user->id }}</td>
-                                                <td>{{ $user->name }}</td>
-                                                <td>{{ $user->email }}</td>
-                                                <td>{{ $user->role_name }}</td>
-                                                <td>{{ $user->phone }}</td>
+                                                <td>{{ $category->id }}</td>
                                                 <td>
-                                                    <a href="{{ route('users.edit', $user->id) }}"
+                                                    {{ $category->name }}
+                                                    @if ($category->children_count > 0)
+                                                        <br>
+                                                        <small>{{ $category->children_count }} danh mục con</small>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $category->view_name }}</td>
+                                                <td>
+                                                    <a href="{{ route('categories.edit', $category->id) }}"
                                                         class="btn btn-primary btn-sm">
                                                         Chỉnh sửa
                                                     </a>
-                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                                    <form action="{{ route('categories.destroy', $category->id) }}"
+                                                        method="POST">
                                                         @method('DELETE')
                                                         @csrf
                                                         <button type="submit" class="btn btn-danger btn-sm"
@@ -112,15 +130,15 @@
                         <div class="row">
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
-                                    Hiển thị {{ $users->firstItem() }} đến {{ $users->lastItem() }} trong tổng số
-                                    {{ $users->total() }} dữ liệu
+                                    Hiển thị {{ $categories->firstItem() }} đến {{ $categories->lastItem() }} trong tổng
+                                    số {{ $categories->total() }} dữ liệu
                                 </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
                                     <ul class="pagination">
-                                        @foreach ($users->links()->elements[0] as $key => $item)
-                                            @if ($users->links()->paginator->currentPage() == $key)
+                                        @foreach ($categories->links()->elements[0] as $key => $item)
+                                            @if ($categories->links()->paginator->currentPage() == $key)
                                                 <li class="active">
                                                     <a>{{ $key }}</a>
                                                 </li>

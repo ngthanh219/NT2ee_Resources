@@ -6,21 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
         $id = null;
@@ -31,9 +21,9 @@ class UserRequest extends FormRequest
 
         return [
             "role_id" => "required",
-            "name" => "required",
-            "email" => "required|email|unique:users,email," . $id,
-            "phone" => "required|regex:/(0)[0-9]{9}/|digits:10|unique:users,phone," . $id,
+            "name" => "required|max:255",
+            "email" => "required|max:255|email|unique:users,email," . $id,
+            "phone" => "nullable|regex:/(0)[0-9]{9}/|digits:10|unique:users,phone," . $id,
             "address" => "nullable"
         ];
     }

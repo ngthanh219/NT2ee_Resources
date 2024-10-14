@@ -11,9 +11,22 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'status',
+        'view',
         'parent_id',  
     ];
+
+    protected $appends = [
+        'view_name'
+    ];
+
+    public function getViewNameAttribute()
+    {
+        if ($this->view == config('base.view.show')) {
+            return 'Đang hiển thị';
+        }
+
+        return 'Đang ẩn';
+    }
 
     public function children()
     {

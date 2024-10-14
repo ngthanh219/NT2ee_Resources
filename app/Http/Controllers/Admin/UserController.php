@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -72,48 +73,65 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function edit(Request $request, $id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            $pageName = 'Thông tin dữ liệu';
+            $compact = [
+                'pageName',
+                'request',
+                'user'
+            ];
+
+            return view('admin.user.edit', compact($compact));
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function update(UserRequest $request, $id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            $data = $request->all();
+
+            if ($data['password'] == null) {
+                unset($data['password']);
+            } else {
+                $data['password'] = bcrypt($data['password']);
+            }
+
+            $user->update($data);
+
+            return redirect()->back()->with('noti', [
+                'type' => config('base.noti.success'),
+                'message' => 'Lưu thành công'
+            ]);
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            if (Auth::guard('admin')->user()->id == $user->id) {
+                return redirect()->back()->with('noti', [
+                    'type' => config('base.noti.error'),
+                    'message' => 'Không thể xóa tài khoản đang đăng nhập'
+                ]);
+            }
+
+            $user->delete();
+
+            return redirect()->back()->with('noti', [
+                'type' => config('base.noti.success'),
+                'message' => 'Xóa thành công'
+            ]);
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
+        }
     }
 }

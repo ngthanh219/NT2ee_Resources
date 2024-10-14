@@ -10,7 +10,8 @@ return [
     ],
     'view' => [
         'show' => 0,
-        'hidden' => 1
+        'hidden' => 1,
+        'all' => 3
     ],
     'order_status' => [
         'pending' => 0,
@@ -31,5 +32,6 @@ return [
         'success' => 0,
         'error' => 1
     ],
-    'pagination' => 15
+    'pagination' => 15,
+    'parent_category_default' => 0
 ];

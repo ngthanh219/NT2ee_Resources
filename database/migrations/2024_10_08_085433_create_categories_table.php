@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('view')->default(config('base.view.show'));
-            $table->integer('parent_id')->nullable();
+            $table->integer('parent_id')->default(config('base.parent_category_default'));
             $table->timestamps();
         });
     }
