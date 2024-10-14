@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
@@ -22,6 +23,7 @@ Route::group([
         Route::resources([
             'users' => UserController::class,
             'categories' => CategoryController::class,
+            'attributes' => AttributeController::class
         ]);
     });
 });

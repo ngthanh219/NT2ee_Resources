@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Category;
 
-class CategoryRequest extends FormRequest
+class AttributeRequest extends FormRequest
 {
     public function authorize()
     {
@@ -15,16 +15,16 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         return [
+            'type' => 'required|integer',
             'name' => 'required|max:255',
-            'view' => 'required',
-            'parent_id' => 'nullable'
+            'description' => 'nullable|max:500'
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'tên danh mục'
+            'name' => 'loại sản phẩm'
         ];
     }
 }

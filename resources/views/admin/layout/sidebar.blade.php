@@ -31,7 +31,7 @@
                     </li>
 
                     <li class="{{ request()->is('*attributes*') ? 'active' : '' }}">
-                        <a href="#">
+                        <a href="{{ route('attributes.index') }}">
                             <i class="fa fa-table"></i>
                             Loại sản phẩm
                         </a>
