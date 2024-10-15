@@ -38,7 +38,7 @@
                     </li>
 
                     <li class="{{ request()->is('*products*') ? 'active' : '' }}">
-                        <a href="#">
+                        <a href="{{ route('products.index') }}">
                             <i class="fa fa-database"></i>
                             Sản phẩm
                         </a>

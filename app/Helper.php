@@ -31,9 +31,9 @@ class Helper
         return $basePath . '/' . $fileName;
     }
 
-    public static function removeFile($image, $basePath)
+    public static function removeFile($image)
     {
-        $oldFilePath = public_path(self::$folder . $basePath . '/' . $image);
+        $oldFilePath = public_path(self::$folder . $image);
 
         if (isset($oldFilePath)) {
             if (file_exists($oldFilePath)) {

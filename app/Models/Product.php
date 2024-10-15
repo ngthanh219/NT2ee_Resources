@@ -10,7 +10,6 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'category_id',
         'name',
         'slug',
         'image',
@@ -18,9 +17,22 @@ class Product extends Model
         'view'
     ];
 
+    protected $appends = [
+        'view_name'
+    ];
+
     public function getImageAttribute($value)
     {
         return json_decode($value, true);
+    }
+
+    public function getViewNameAttribute()
+    {
+        if ($this->view == config('base.view.show')) {
+            return 'Đang hiển thị';
+        }
+
+        return 'Đang ẩn';
     }
 
     public function setImageAttribute($value)

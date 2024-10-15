@@ -14,4 +14,15 @@
 
 <script src="{{ asset('style.js') }}"></script>
 
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('#editor'))
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
 @yield('script')

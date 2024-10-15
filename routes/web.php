@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,8 @@ Route::group([
         Route::resources([
             'users' => UserController::class,
             'categories' => CategoryController::class,
-            'attributes' => AttributeController::class
+            'attributes' => AttributeController::class,
+            'products' => ProductController::class
         ]);
     });
 });
