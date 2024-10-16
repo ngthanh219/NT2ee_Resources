@@ -36,12 +36,12 @@ return [
     'parent_category_default' => 0,
     'attribute_type' => [
         'all' => 0,
-        'size' => 1,    // Phiên bản, kích thước của sản phẩm
-        'color' => 2    // Màu sản phẩm
+        'color' => 1,
+        'size' => 2
     ],
     'attribute_type_name' => [
         0 => 'Tất cả',
-        1 => 'Loại phiên bản',
-        2 => 'Loại màu'
+        1 => 'Loại màu',
+        2 => 'Loại phiên bản'
     ]
 ];

@@ -11,7 +11,7 @@ Route::group([
     'middleware' => [],
     'prefix' => 'admin'
 ], function () {
-    Route::get('login', [AuthController::class, 'loginForm'])->name('login-form');
+    Route::get('login', [AuthController::class, 'loginForm'])->name('login.form');
     Route::post('login', [AuthController::class, 'login'])->name('login');
 
     Route::group([
@@ -19,13 +19,16 @@ Route::group([
             'auth.admin'
         ]
     ], function () {
-        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-
         Route::resources([
             'users' => UserController::class,
             'categories' => CategoryController::class,
             'attributes' => AttributeController::class,
             'products' => ProductController::class
         ]);
+
+        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+        Route::post('products/{product}/prices', [ProductController::class, 'createProductPrices'])->name('products.prices.store');
+        Route::delete('products/{product}/prices/{product_price_id}', [ProductController::class, 'deleteProductPrices'])->name('products.prices.destroy');
+        Route::put('products/{product}/prices/{product_price_id}', [ProductController::class, 'updateProductPrices'])->name('products.prices.update');
     });
 });

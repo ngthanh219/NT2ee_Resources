@@ -162,5 +162,12 @@ return [
         'title'                 => 'tiêu đề',
         'username'              => 'tên đăng nhập',
         'year'                  => 'năm',
+        'quantity'              => 'số lượng',
+        'price'                 => 'giá gốc',
+        'sale_percent'          => 'khuyến mãi',
+        'sale_price'            => 'giá bán',
+        'category_id'           => 'danh mục',
+        'view'                  => 'trạng thái hiển thị',
+        'image'                 => 'hình ảnh'
     ],
 ];

@@ -31,7 +31,6 @@ class ProductRequest extends FormRequest
     public function attributes()
     {
         return [
-            'category_id' => 'danh mục',
             'name' => 'sản phẩm'
         ];
     }

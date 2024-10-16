@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttributeRequest;
 use App\Models\Attribute;
+use App\Models\ProductPrice;
 use Illuminate\Http\Request;
 
 class AttributeController extends Controller
@@ -42,8 +44,7 @@ class AttributeController extends Controller
     {
         try {
             $pageName = 'Thêm thông tin';
-            $attributeTypes = config('base.attribute_type_name');
-            unset($attributeTypes[config('base.attribute_type.all')]);
+            $attributeTypes = Helper::getAttributeTypes();
             $compact = [
                 'pageName',
                 'request',
@@ -76,8 +77,7 @@ class AttributeController extends Controller
         try {
             $attribute = Attribute::findOrFail($id);
             $pageName = 'Thông tin dữ liệu';
-            $attributeTypes = config('base.attribute_type_name');
-            unset($attributeTypes[config('base.attribute_type.all')]);
+            $attributeTypes = Helper::getAttributeTypes();
             $compact = [
                 'pageName',
                 'request',
@@ -111,6 +111,15 @@ class AttributeController extends Controller
     {
         try {
             $attribute = Attribute::findOrFail($id);
+            $productPrice = ProductPrice::where('attribute_ids', 'like', '%"' . $id . '"%')->exists();
+            
+            if ($productPrice) {
+                return redirect()->back()->with('noti', [
+                    'type' => config('base.noti.error'),
+                    'message' => 'Loại sản phẩm này đang được sử dụng'
+                ]);
+            }
+
             $attribute->delete();
 
             return redirect()->back()->with('noti', [

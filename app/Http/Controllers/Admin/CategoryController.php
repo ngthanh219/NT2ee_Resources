@@ -126,7 +126,14 @@ class CategoryController extends Controller
             if ($childrenCategory) {
                 return redirect()->back()->with('noti', [
                     'type' => config('base.noti.error'),
-                    'message' => 'Danh mục này đang có dữ liệu'
+                    'message' => 'Danh mục này đang được sử dụng bởi danh mục con'
+                ]);
+            }
+
+            if ($category->load('products')->products->count() > 0) {
+                return redirect()->back()->with('noti', [
+                    'type' => config('base.noti.error'),
+                    'message' => 'Danh mục này đang được sử dụng bởi sản phẩm'
                 ]);
             }
 

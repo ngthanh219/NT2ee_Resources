@@ -26,6 +26,11 @@ class Product extends Model
         return json_decode($value, true);
     }
 
+    public function setImageAttribute($value)
+    {
+        $this->attributes['image'] = json_encode($value);
+    }
+
     public function getViewNameAttribute()
     {
         if ($this->view == config('base.view.show')) {
@@ -35,14 +40,9 @@ class Product extends Model
         return 'Đang ẩn';
     }
 
-    public function setImageAttribute($value)
-    {
-        $this->attributes['image'] = json_encode($value);
-    }
-
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_product', 'category_id', 'product_id');
+        return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
     }
 
     public function prices()

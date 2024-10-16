@@ -1,6 +1,8 @@
 <?php
 
 namespace App;
+
+use App\Models\Attribute;
 use Carbon\Carbon;
 
 class Helper
@@ -40,5 +42,29 @@ class Helper
                 unlink($oldFilePath);
             }
         }
+    }
+
+    public static function getAttributeTypes()
+    {
+        $attributeTypes = config('base.attribute_type_name');
+        unset($attributeTypes[config('base.attribute_type.all')]);
+
+        return $attributeTypes;
+    }
+
+    public static function getAttributes()
+    {
+        $attributes = [];
+        $attributeTypes = self::getAttributeTypes();
+
+        foreach ($attributeTypes as $type => $typeName) {
+            $attributes[] = [
+                'type' => $type,
+                'name' => $typeName,
+                'data' => Attribute::where('type', $type)->get(['id', 'name', 'description'])->toArray()
+            ];
+        }
+
+        return $attributes;
     }
 }

@@ -55,7 +55,7 @@ class AuthController extends Controller
         try {
             Auth::guard('admin')->logout();
 
-            return redirect()->route('login-form');
+            return redirect()->route('login.form');
         } catch (\Exception $ex) {
             dd($ex->getMessage());
         }

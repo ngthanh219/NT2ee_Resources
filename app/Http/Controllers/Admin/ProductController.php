@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductPriceRequest;
 use App\Http\Requests\ProductRequest;
+use App\Models\Attribute;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -119,12 +122,23 @@ class ProductController extends Controller
             $pageName = 'Thông tin dữ liệu';
             $productCategories = $product->categories->pluck('id')->toArray();
             $categories = Category::orderBydesc('created_at')->get();
+            $attributes = Helper::getAttributes();
+            $productPrices = ProductPrice::where('product_id', $id)->orderBy('sale_price')->get();
+            $productPrice = null;
+
+            if (isset($request->product_price_id)) {
+                $productPrice = ProductPrice::findOrFail($request->product_price_id);
+            }
+
             $compact = [
                 'pageName',
                 'request',
                 'product',
                 'productCategories',
-                'categories'
+                'categories',
+                'attributes',
+                'productPrices',
+                'productPrice'
             ];
 
             return view('admin.product.edit', compact($compact));
@@ -175,7 +189,7 @@ class ProductController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('noti', [
+            return redirect()->route('products.edit', $id)->with('noti', [
                 'type' => config('base.noti.success'),
                 'message' => 'Lưu thành công'
             ]);
@@ -189,11 +203,102 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
+            $product->prices()->delete();
+            $product->categories()->sync([]);
+
+            foreach ($product->image as $image) {
+                Helper::removeFile($image);
+            }
+
             $product->delete();
 
             return redirect()->back()->with('noti', [
                 'type' => config('base.noti.success'),
                 'message' => 'Xóa thành công'
+            ]);
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
+        }
+    }
+
+    public function createProductPrices(ProductPriceRequest $request, $id)
+    {
+        try {
+            Product::findOrFail($id);
+            $existAttributesCount = Attribute::whereIn('id', $request->attribute_ids)->count();
+            
+            if ($existAttributesCount != count($request->attribute_ids)) {
+                return redirect()->back()->with('noti', [
+                    'type' => config('base.noti.error'),
+                    'message' => 'Loại sản phẩm không hợp lệ'
+                ])->withInput();
+            }
+
+            $productPrices = ProductPrice::where('product_id', $id)->get();
+
+            foreach ($productPrices as $productPrice) {
+                $productPriceCount = 0;
+
+                foreach ($request->attribute_ids as $attributeId) {
+                    if (in_array($attributeId, $productPrice->attribute_ids)) {
+                        $productPriceCount++;
+                    }
+                }
+
+                if ($productPriceCount == count($request->attribute_ids)) {
+                    return redirect()->back()->with('noti', [
+                        'type' => config('base.noti.error'),
+                        'message' => 'Loại sản phẩm đã tồn tại'
+                    ])->withInput();
+                }
+            }
+            
+            $data = $request->all();
+            $data['product_id'] = $id;
+            ProductPrice::create($data);
+
+            return redirect()->route('products.edit', $id)->with('noti', [
+                'type' => config('base.noti.success'),
+                'message' => 'Lưu thành công'
+            ]);
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
+        }
+    }
+
+    public function deleteProductPrices(Request $request, $id, $productPriceId)
+    {
+        try {
+            Product::findOrFail($id);
+            $productPrice = ProductPrice::findOrFail($productPriceId);
+            $productPrice->delete();       
+
+            return redirect()->route('products.edit', $id)->with('noti', [
+                'type' => config('base.noti.success'),
+                'message' => 'Lưu thành công'
+            ]);
+        } catch (\Exception $ex) {
+            dd($ex->getMessage());
+        }
+    }
+
+    public function updateProductPrices(ProductPriceRequest $request, $id, $productPriceId)
+    {
+        try {
+            Product::findOrFail($id);
+            $productPrice = ProductPrice::findOrFail($productPriceId);
+            $data = $request->only([
+                'quantity',
+                'price',
+                'sale_percent',
+                'sale_price'
+            ]);
+
+            $productPrice->update($data);
+
+            return redirect()->route('products.edit', $id)->with('noti', [
+                'type' => config('base.noti.success'),
+                'message' => 'Lưu thành công'
             ]);
         } catch (\Exception $ex) {
             dd($ex->getMessage());
