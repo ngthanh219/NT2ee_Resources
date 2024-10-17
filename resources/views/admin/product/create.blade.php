@@ -20,18 +20,21 @@
                     </div>
                     <div class="x_content">
                         <br>
-                        <form method="POST" action="{{ route('products.store') }}" id="form" class="form-horizontal" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('products.store') }}" id="form" class="form-horizontal"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="form-group row">
                                 <label class="control-label col-md-3 col-sm-3 ">Danh mục *</label>
                                 <div class="col-md-9 col-sm-9 ">
-                                    <select id="category_id" class="form-control" name="category_id[]" multiple
+                                    <select class="form-control" name="category_id[]" id="select2" multiple
                                         size="{{ count($categories) }}">
                                         @foreach ($categories as $category)
                                             @if ($category->parent_id == 0)
                                                 <optgroup label="{{ $category->name }}">
                                                     @foreach ($category->children as $child)
-                                                        <option value="{{ $child->id }}" {{ old('category_id') && in_array($child->id, old('category_id')) ? 'selected' : '' }}>{{ $child->name }}</option>
+                                                        <option value="{{ $child->id }}"
+                                                            {{ old('category_id') && in_array($child->id, old('category_id')) ? 'selected' : '' }}>
+                                                            {{ $child->name }}</option>
                                                     @endforeach
                                                 </optgroup>
                                             @endif

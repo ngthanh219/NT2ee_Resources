@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->double('total');
             $table->integer('payment_method')->default(config('base.payment_method.qr'));
-            $table->integer('status')->default(config('base.order_status.pending'));
+            $table->integer('status')->default(config('base.order_status.new'));
             $table->integer('is_paid')->default(config('base.is_paid.no'));
             $table->timestamps();
         });

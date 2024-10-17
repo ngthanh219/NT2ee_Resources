@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
-            $table->text('location');
+            $table->text('address');
             $table->string('phone');
             $table->string('email')->nullable();
             $table->text('iframe')->nullable();

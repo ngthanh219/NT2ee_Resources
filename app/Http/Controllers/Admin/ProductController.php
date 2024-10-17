@@ -202,6 +202,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
+            DB::beginTransaction();
             $product = Product::findOrFail($id);
             $product->prices()->delete();
             $product->categories()->sync([]);
@@ -211,12 +212,14 @@ class ProductController extends Controller
             }
 
             $product->delete();
+            DB::commit();
 
             return redirect()->back()->with('noti', [
                 'type' => config('base.noti.success'),
                 'message' => 'Xóa thành công'
             ]);
         } catch (\Exception $ex) {
+            DB::rollBack();
             dd($ex->getMessage());
         }
     }

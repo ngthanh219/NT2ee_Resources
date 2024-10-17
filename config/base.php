@@ -14,10 +14,11 @@ return [
         'all' => 3
     ],
     'order_status' => [
-        'pending' => 0,
-        'comfirm' => 1,
-        'shipping' => 2,
-        'cancel' => 3
+        'new' => 0,
+        'processing' => 1,
+        'shipped' => 2,
+        'delivered' => 3,
+        'cancelled' => 4
     ],
     'is_paid' => [
         'no' => 0,
@@ -37,11 +38,11 @@ return [
     'attribute_type' => [
         'all' => 0,
         'color' => 1,
-        'size' => 2
+        'size' => 2,
     ],
     'attribute_type_name' => [
         0 => 'Tất cả',
         1 => 'Loại màu',
-        2 => 'Loại phiên bản'
+        2 => 'Loại phiên bản',
     ]
 ];

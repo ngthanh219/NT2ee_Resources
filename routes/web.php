@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\StoreController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +25,9 @@ Route::group([
             'users' => UserController::class,
             'categories' => CategoryController::class,
             'attributes' => AttributeController::class,
-            'products' => ProductController::class
+            'products' => ProductController::class,
+            'stores' => StoreController::class,
+            'orders' => OrderController::class,
         ]);
 
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');

@@ -45,14 +45,14 @@
                     </li>
 
                     <li class="{{ request()->is('*stores*') ? 'active' : '' }}">
-                        <a href="#">
+                        <a href="{{ route('stores.index') }}">
                             <i class="fa fa-location-arrow"></i>
                             Hệ thống cửa hàng
                         </a>
                     </li>
 
                     <li class="{{ request()->is('*orders*') ? 'active' : '' }}">
-                        <a href="#">
+                        <a href="{{ route('orders.index') }}">
                             <i class="fa fa-shopping-cart"></i>
                             Đơn hàng
                         </a>

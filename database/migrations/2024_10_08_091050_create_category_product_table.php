@@ -14,10 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('category_product', function (Blueprint $table) {
-            $table->id();
             $table->unsignedInteger('category_id');
             $table->unsignedInteger('product_id');
-            $table->timestamps();
         });
     }
 

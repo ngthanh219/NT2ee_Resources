@@ -88,3 +88,7 @@
 .img-list .img-item:hover .img-action {
     opacity: 1;
 }
+
+.select2-container {
+    width: 100% !important;
+}

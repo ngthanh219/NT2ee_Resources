@@ -27,7 +27,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-md-3 col-sm-3 ">Danh mục *</label>
                                 <div class="col-md-9 col-sm-9 ">
-                                    <select id="category_id" class="form-control" name="category_id[]" multiple
+                                    <select class="form-control" name="category_id[]" id="select2" multiple
                                         size="{{ count($categories) }}">
                                         @foreach ($categories as $category)
                                             @if ($category->parent_id == 0)

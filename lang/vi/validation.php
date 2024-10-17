@@ -168,6 +168,7 @@ return [
         'sale_price'            => 'giá bán',
         'category_id'           => 'danh mục',
         'view'                  => 'trạng thái hiển thị',
-        'image'                 => 'hình ảnh'
+        'image'                 => 'hình ảnh',
+        'location'                 => 'vị trí',
     ],
 ];

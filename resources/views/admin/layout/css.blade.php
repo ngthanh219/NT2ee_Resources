@@ -10,6 +10,8 @@
 <!-- Custom Theme Style -->
 <link href="{{ asset('admin/build/css/custom.min.css') }}" rel="stylesheet">
 
+<!-- My style -->
 <link href="{{ asset('style.css') }}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
 @yield('css')

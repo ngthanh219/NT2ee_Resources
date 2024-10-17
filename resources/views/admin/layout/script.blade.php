@@ -12,17 +12,23 @@
 <!-- Custom Theme Scripts -->
 <script src="{{ asset('admin/build/js/custom.min.js') }}"></script>
 
+<!-- My script -->
 <script src="{{ asset('style.js') }}"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-    ClassicEditor.create(document.querySelector('#editor'))
-        .then(editor => {
-            window.editor = editor;
-        })
-        .catch(error => {
-            console.error(error);
+    $(document).ready(function() {
+        $('#select2').select2({
+            placeholder: "Chọn dữ liệu",
+            allowClear: true
         });
+    });
+
+    ClassicEditor.create(document.querySelector('#editor')).then(editor => {
+        window.editor = editor;
+    }).catch(error => {
+        console.error(error);
+    });
 </script>
 
 @yield('script')
