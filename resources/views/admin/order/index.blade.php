@@ -34,24 +34,32 @@
                 <div class="x_panel">
                     <div class="x_title">
                         <div class="col-sm-2 pl-0">
-                            <label class="control-label">Trạng thái hiển thị</label>
-                            <select class="form-control" onchange="location = this.value;">
-                                <option
-                                    value="{{ route('orders.index', ['view' => config('base.view.all')] + $request->all()) }}">
-                                    Tất cả
-                                </option>
-                                <option
-                                    value="{{ route('orders.index', ['view' => config('base.view.show')] + $request->all()) }}"
-                                    {{ isset($request->view) && $request->view == config('base.view.show') ? 'selected' : '' }}>
-                                    Đang hiển thị
-                                </option>
-                                <option
-                                    value="{{ route('orders.index', ['view' => config('base.view.hidden')] + $request->all()) }}"
-                                    {{ isset($request->view) && $request->view == config('base.view.hidden') ? 'selected' : '' }}>
-                                    Đang ẩn
-                                </option>
+                            <label class="control-label">Trạng thái đơn hàng</label>
+                            <select class="form-control" name="status" onchange="location = this.value;">
+                                @foreach ($orderStatusName as $index => $name)
+                                    <option
+                                        value="{{ route('orders.index', ['status' => $index] + $request->all()) }}"
+                                        {{ isset($request->status) && $request->status == $index ? 'selected' : '' }}
+                                    >
+                                        {{ $name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
+                        <div class="col-sm-2 pl-0">
+                            <label class="control-label">Trạng thái thanh toán</label>
+                            <select class="form-control" name="is_paid" onchange="location = this.value;">
+                                @foreach ($isPaidName as $index => $name)
+                                    <option
+                                        value="{{ route('orders.index', ['is_paid' => $index] + $request->all()) }}"
+                                        {{ isset($request->is_paid) && $request->is_paid == $index ? 'selected' : '' }}
+                                    >
+                                        {{ $name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
                         <div class="clearfix"></div>
                     </div>
 
@@ -60,11 +68,13 @@
                             <table class="table table-striped jambo_table bulk_action">
                                 <thead>
                                     <tr class="headings">
-                                        <th class="column-title">ID</th>
-                                        <th class="column-title">Địa chỉ</th>
+                                        <th class="column-title">Mã đơn hàng</th>
+                                        <th class="column-title">Giá trị đơn hàng</th>
+                                        <th class="column-title">Tên đầy đủ</th>
                                         <th class="column-title">Điện thoại</th>
-                                        <th class="column-title">Email</th>
-                                        <th class="column-title">Trạng thái hiển thị</th>
+                                        <th class="column-title">Địa chỉ</th>
+                                        <th class="column-title">Trạng thái đơn hàng</th>
+                                        <th class="column-title">Trạng thái thanh toán</th>
                                         <th class="column-title no-link last">
                                             <span class="nobr">Hành động</span>
                                         </th>
@@ -75,11 +85,13 @@
                                     <tbody>
                                         @foreach ($orders as $order)
                                             <tr class="even pointer">
-                                                <td>{{ $order->id }}</td>
-                                                <td>{{ $order->address }}</td>
+                                                <td>#{{ $order->id }}</td>
+                                                <td>{{ number_format($order->total) }}đ</td>
+                                                <td>{{ $order->name }}</td>
                                                 <td>{{ $order->phone }}</td>
-                                                <td>{{ $order->email }}</td>
-                                                <td>{{ $order->view_name }}</td>
+                                                <td>{{ $order->address }}</td>
+                                                <td>{{ $order->status_name }}</td>
+                                                <td>{{ $order->is_paid_name }}</td>
                                                 <td>
                                                     <a href="{{ route('orders.edit', $order->id) }}"
                                                         class="btn btn-primary btn-sm">
@@ -100,7 +112,7 @@
                                 @else
                                     <tbody>
                                         <tr>
-                                            <td colspan="6" class="text-center">Không có dữ liệu</td>
+                                            <td colspan="8" class="text-center">Không có dữ liệu</td>
                                         </tr>
                                     </tbody>
                                 @endif

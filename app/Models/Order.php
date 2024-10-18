@@ -22,6 +22,27 @@ class Order extends Model
         'is_paid'
     ];
 
+    protected $appends = [
+        'payment_method_name',
+        'status_name',
+        'is_paid_name'
+    ];
+
+    public function getPaymentMethodNameAttribute()
+    {
+        return config('base.payment_method_name')[$this->payment_method];
+    }
+
+    public function getStatusNameAttribute()
+    {
+        return config('base.order_status_name')[$this->status];
+    }
+
+    public function getIsPaidNameAttribute()
+    {
+        return config('base.is_paid_name')[$this->is_paid];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -14,20 +14,40 @@ return [
         'all' => 3
     ],
     'order_status' => [
-        'new' => 0,
-        'processing' => 1,
-        'shipped' => 2,
-        'delivered' => 3,
-        'cancelled' => 4
+        'all' => 0,
+        'new' => 1,
+        'processing' => 2,
+        'shipped' => 3,
+        'delivered' => 4,
+        'cancelled' => 5
+    ],
+    'order_status_name' => [
+        0 => 'Tất cả',
+        1 => 'Mới',
+        2 => 'Đang xử lý',
+        3 => 'Đã ship',
+        4 => 'Đã nhận hàng',
+        5 => 'Đã hủy hàng'
     ],
     'is_paid' => [
-        'no' => 0,
-        'yes' => 1
+        'all' => 0,
+        'no' => 1,
+        'yes' => 2
+    ],
+    'is_paid_name' => [
+        0 => 'Tất cả',
+        1 => 'Chưa thanh toán',
+        2 => 'Đã thanh toán'
     ],
     'payment_method' => [
         'qr' => 0,
         'ship_cod' => 1,
         'online' => 2
+    ],
+    'payment_method_name' => [
+        0 => 'Chuyển khoản / Quét mã',
+        1 => 'Thanh toán khi nhận hàng',
+        2 => 'Thanh toán online'
     ],
     'noti' => [
         'success' => 0,

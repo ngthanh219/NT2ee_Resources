@@ -23,7 +23,7 @@
                         <form method="POST" action="{{ route('users.store') }}" id="demo-form2" class="form-horizontal">
                             @csrf
                             <div class="form-group row ">
-                                <label class="control-label col-md-3 col-sm-3 ">Họ & tên *</label>
+                                <label class="control-label col-md-3 col-sm-3 ">Tên đầy đủ *</label>
                                 <div class="col-md-9 col-sm-9 ">
                                     <input type="text" class="form-control" name="name" placeholder="..." value="{{ old('name') }}">
                                     @if ($errors->has('name'))

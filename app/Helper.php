@@ -67,4 +67,26 @@ class Helper
 
         return $attributes;
     }
+
+    public static function getOrderStatusName($all = false)
+    {
+        $orderStatusName = config('base.order_status_name');
+
+        if (!$all) {
+            unset($orderStatusName[config('base.order_status.all')]);
+        }
+
+        return $orderStatusName;
+    }
+
+    public static function getIsPaidName($all = false)
+    {
+        $isPaidName = config('base.is_paid_name');
+
+        if (!$all) {
+            unset($isPaidName[config('base.is_paid.all')]);
+        }
+
+        return $isPaidName;
+    }
 }

@@ -169,6 +169,8 @@ return [
         'category_id'           => 'danh mục',
         'view'                  => 'trạng thái hiển thị',
         'image'                 => 'hình ảnh',
-        'location'                 => 'vị trí',
+        'location'              => 'vị trí',
+        'product'               => 'sản phẩm',
+        'user_id'               => 'tài khoản'
     ],
 ];

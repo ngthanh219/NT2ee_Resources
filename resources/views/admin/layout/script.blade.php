@@ -24,11 +24,13 @@
         });
     });
 
-    ClassicEditor.create(document.querySelector('#editor')).then(editor => {
-        window.editor = editor;
-    }).catch(error => {
-        console.error(error);
-    });
+    if (document.querySelector('#editor')) {
+        ClassicEditor.create(document.querySelector('#editor')).then(editor => {
+            window.editor = editor;
+        }).catch(error => {
+            console.log(error);
+        });
+    }
 </script>
 
 @yield('script')
