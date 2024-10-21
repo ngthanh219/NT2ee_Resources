@@ -171,6 +171,7 @@ return [
         'image'                 => 'hình ảnh',
         'location'              => 'vị trí',
         'product'               => 'sản phẩm',
-        'user_id'               => 'tài khoản'
+        'user_id'               => 'tài khoản',
+        'short_description'     => 'mô tả ngắn'
     ],
 ];

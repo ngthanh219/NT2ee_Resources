@@ -66,7 +66,7 @@
                     </li>
 
                     <li class="{{ request()->is('*posts*') ? 'active' : '' }}">
-                        <a href="#">
+                        <a href="{{ route('posts.index') }}">
                             <i class="fa fa-newspaper-o"></i>
                             Bài viết
                         </a>
