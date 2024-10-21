@@ -135,6 +135,10 @@ class OrderController extends Controller
 
             foreach ($orderDetailData as &$item) {
                 $item['order_id'] = $order->id;
+                $productPrice = ProductPrice::findOrFail($item['product_price_id']);
+                $productPrice->update([
+                    'quantity' => $productPrice->quantity - $item['quantity']
+                ]);
             }
 
             OrderDetail::insert($orderDetailData);
@@ -186,18 +190,58 @@ class OrderController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(OrderRequest $request, $id)
     {
         try {
+            DB::beginTransaction();
             $order = Order::findOrFail($id);
-            $data = $request->all();
-            $order->update($data);
+            $order->load('orderDetails');
+            $orderData = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'note' => $request->note,
+                'status' => $request->status,
+                'is_paid' => $request->is_paid
+            ];
 
-            return redirect()->back()->with('noti', [
+            if (
+                $order->restock_on_cancel == config('base.restock_on_cancel.no') &&
+                $request->status == config('base.order_status.cancelled') &&
+                $request->is_paid == config('base.is_paid.no')
+            ) {
+                $orderData['restock_on_cancel'] = config('base.restock_on_cancel.yes');
+                foreach ($order->orderDetails as $orderDetail) {
+                    $productPrice = ProductPrice::findOrFail($orderDetail->product_price_id);
+                    $productPrice->update([
+                        'quantity' => $productPrice->quantity + $orderDetail->quantity
+                    ]);
+                }
+            }
+
+            if (
+                $order->restock_on_cancel == config('base.restock_on_cancel.yes') &&
+                $request->status != config('base.order_status.cancelled')
+            ) {
+                $orderData['restock_on_cancel'] = config('base.restock_on_cancel.no');
+                foreach ($order->orderDetails as $orderDetail) {
+                    $productPrice = ProductPrice::findOrFail($orderDetail->product_price_id);
+                    $productPrice->update([
+                        'quantity' => $productPrice->quantity - $orderDetail->quantity
+                    ]);
+                }
+            }
+
+            $order->update($orderData);
+            DB::commit();
+
+            return redirect()->route('orders.edit', $order->id)->with('noti', [
                 'type' => config('base.noti.success'),
                 'message' => 'Lưu thành công'
             ]);
         } catch (\Exception $ex) {
+            DB::rollBack();
             dd($ex->getMessage());
         }
     }
@@ -217,6 +261,23 @@ class OrderController extends Controller
                 'type' => config('base.noti.success'),
                 'message' => 'Xóa thành công'
             ]);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            dd($ex->getMessage());
+        }
+    }
+
+    public function getBilling(Request $request, $id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            $order->load('orderDetails');
+            $compact = [
+                'request',
+                'order',
+            ];
+
+            return view('admin.order.billing', compact($compact));
         } catch (\Exception $ex) {
             DB::rollBack();
             dd($ex->getMessage());

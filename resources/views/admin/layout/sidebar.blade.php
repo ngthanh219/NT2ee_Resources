@@ -59,7 +59,7 @@
                     </li>
 
                     <li class="{{ request()->is('*dashboard*') ? 'active' : '' }}">
-                        <a href="#">
+                        <a href="{{ route('dashboard.index') }}">
                             <i class="fa fa-bar-chart-o"></i>
                             Thống kê
                         </a>

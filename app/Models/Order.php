@@ -19,7 +19,8 @@ class Order extends Model
         'total',
         'payment_method',
         'status',
-        'is_paid'
+        'is_paid',
+        'restock_on_cancel'
     ];
 
     protected $appends = [

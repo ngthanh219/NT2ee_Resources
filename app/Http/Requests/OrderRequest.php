@@ -14,8 +14,15 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         $userId = 'required';
+        $product = 'required';
+
         if ($this->input('user_id') == 0) {
             $userId = 'required|numeric|min:1';
+        }
+
+        if ($this->method() === 'PUT') {
+            $userId = 'nullable';
+            $product = 'nullable';
         }
 
         return [
@@ -27,7 +34,7 @@ class OrderRequest extends FormRequest
             'note' => 'nullable',
             'status' => 'required',
             'is_paid' => 'required',
-            'product' => 'required'
+            'product' => $product
         ];
     }
 

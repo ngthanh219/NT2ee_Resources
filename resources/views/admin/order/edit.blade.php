@@ -13,8 +13,9 @@
 
         <div class="row">
             <div class="col-md-12 col-sm-12">
-                <form method="POST" action="{{ route('orders.store') }}" id="demo-form2" class="form-horizontal">
+                <form method="POST" action="{{ route('orders.update', $order->id) }}" id="demo-form2" class="form-horizontal">
                     @csrf
+                    @method('PUT')
                     <div class="col-md-4">
                         <div class="x_panel">
                             <div class="x_title">
@@ -26,7 +27,8 @@
                                 <div class="form-group row">
                                     <label class="control-label col-md-3 col-sm-3 ">Tài khoản chính</label>
                                     <div class="col-md-9 col-sm-9 ">
-                                        <input type="text" value="{{ $order->user->email }}" class="form-control" readonly>
+                                        <input type="text" value="{{ $order->user->email }}" class="form-control"
+                                            readonly>
                                     </div>
                                 </div>
 
@@ -89,7 +91,8 @@
                                     <div class="col-md-9 col-sm-9 ">
                                         <select class="form-control" name="status">
                                             @foreach ($orderStatusName as $index => $name)
-                                                <option value="{{ $index }}" {{ $order->status == $index ? 'selected' : '' }}>
+                                                <option value="{{ $index }}"
+                                                    {{ $order->status == $index ? 'selected' : '' }}>
                                                     {{ $name }}
                                                 </option>
                                             @endforeach
@@ -103,7 +106,8 @@
                                 <div class="form-group row">
                                     <label class="control-label col-md-3 col-sm-3 ">Phương thức thanh toán</label>
                                     <div class="col-md-9 col-sm-9 ">
-                                        <input type="text" value="{{ $order->payment_method_name }}" class="form-control" readonly>
+                                        <input type="text" value="{{ $order->payment_method_name }}"
+                                            class="form-control" readonly>
                                     </div>
                                 </div>
 
@@ -112,7 +116,8 @@
                                     <div class="col-md-9 col-sm-9 ">
                                         <select class="form-control" name="is_paid">
                                             @foreach ($isPaidName as $index => $name)
-                                                <option value="{{ $index }}" {{ $order->is_paid == $index ? 'selected' : '' }}>
+                                                <option value="{{ $index }}"
+                                                    {{ $order->is_paid == $index ? 'selected' : '' }}>
                                                     {{ $name }}
                                                 </option>
                                             @endforeach
@@ -132,48 +137,6 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <br>
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <div class="col-md-7">
-                                            <label class="control-label">Sản phẩm *</label>
-                                            <select class="form-control" id="select2-products">
-                                                <option value="0">--Lựa chọn--</option>
-                                                @foreach ($products as $product)
-                                                    @foreach ($product->prices as $price)
-                                                        <option
-                                                            value="{{ $price->id }}"
-                                                            data-name="{{ $product->name . ' - ' . $price->attribute_names }}"
-                                                            data-quantity="{{ $price->quantity }}"
-                                                            data-price="{{ $price->sale_price }}"
-                                                        >
-                                                            {{ $product->name . ' - ' . $price->attribute_names . ': ' . number_format($price->sale_price) }}đ
-                                                        </option>
-                                                    @endforeach
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label class="control-label">Số lượng *</label>
-                                            <input type="number" class="form-control" id="current-quantity" min="1" value="{{ old('quantity') ?? 1 }}">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label class="control-label">Giá *</label>
-                                            <input type="text" class="form-control" id="current-product-price-format"
-                                                value="0đ" readonly>
-                                        </div>
-
-                                        <div class="col-md-1">
-                                            <label class="control-label">&nbsp</label>
-                                            <a href="#" onclick="addCart(event)"
-                                                class="form-control btn btn-primary">Thêm</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="x_content">
                                 <div class="table-responsive">
                                     <table class="table table-striped jambo_table bulk_action">
                                         <thead>
@@ -182,25 +145,20 @@
                                                 <th class="column-title">Giá bán</th>
                                                 <th class="column-title" width="100px">Số lượng</th>
                                                 <th class="column-title" width="200px">Thành tiền</th>
-                                                <th class="column-title no-link last">
-                                                    <span class="nobr">Hành động</span>
-                                                </th>
                                             </tr>
                                         </thead>
 
                                         <tbody id="cart">
                                             @foreach ($order->orderDetails as $orderDetail)
-                                                <tr id="cart-item-{{ $orderDetail->product_price_id }}" data-price="{{ $orderDetail->product_price }}">
+                                                <tr id="cart-item-{{ $orderDetail->product_price_id }}"
+                                                    data-price="{{ $orderDetail->product_price }}">
                                                     <td>{{ $orderDetail->product_name }}</td>
                                                     <td>{{ number_format($orderDetail->product_price) }}đ</td>
                                                     <td>
-                                                        <input type="number" min="0" max="{{ $orderDetail->productPrice->quantity }}" class="form-control" id="cart-item-{{ $orderDetail->product_price_id }}-quantity" name="product[{{ $orderDetail->product_price_id }}]" onchange="changeQuantity(event, {{ $orderDetail->product_price_id }})" value="{{ $orderDetail->quantity }}" />
+                                                        {{ $orderDetail->quantity }}
                                                     </td>
                                                     <td id="cart-item-{{ $orderDetail->product_price_id }}-total">
                                                         {{ number_format($orderDetail->total) }}đ
-                                                    </td>
-                                                    <td>
-                                                        <a href="#" onclick="deleteItem(event, {{ $orderDetail->product_price_id }})" class="btn btn-danger">Xóa</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -215,11 +173,13 @@
                                             </tr>
                                         </tbody>
                                     </table>
+
+                                    <a href="{{ route('orders.billing', $order->id) }}" target="_blank"
+                                        class="btn btn-primary">
+                                        In hóa đơn
+                                    </a>
                                 </div>
                             </div>
-                            @if ($errors->has('product'))
-                                <div class="error-text">{{ $errors->first('product') }}</div>
-                            @endif
                         </div>
                     </div>
 
@@ -235,8 +195,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('script')
-    <script src="{{ asset('admin/order.js') }}"></script>
 @endsection

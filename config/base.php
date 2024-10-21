@@ -25,9 +25,13 @@ return [
         0 => 'Tất cả',
         1 => 'Mới',
         2 => 'Đang xử lý',
-        3 => 'Đã ship',
+        3 => 'Đang giao hàng',
         4 => 'Đã nhận hàng',
         5 => 'Đã hủy hàng'
+    ],
+    'restock_on_cancel' => [
+        'no' => 0,
+        'yes' => 1
     ],
     'is_paid' => [
         'all' => 0,
