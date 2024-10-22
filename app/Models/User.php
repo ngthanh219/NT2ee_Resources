@@ -56,4 +56,9 @@ class User extends Authenticatable
 
         return 'Tài khoản khách hàng';
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
 }

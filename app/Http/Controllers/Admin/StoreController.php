@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequest;
+use App\Models\ProductPrice;
 use App\Models\Store;
 use Illuminate\Http\Request;
 
@@ -116,5 +117,29 @@ class StoreController extends Controller
         } catch (\Exception $ex) {
             dd($ex->getMessage());
         }
+    }
+
+    public function show(Request $request, $id)
+    {
+        $store = Store::findOrFail($id);
+        $pageName = "Chi nhánh: $store->address";
+        $productPrices = ProductPrice::with([
+            'product',
+            'inventories' => function ($query) use ($id) {
+                return $query->where('store_id' , $id);
+            }
+        ])->whereHas('product', function ($query) use ($request) {
+            $query->where('name', 'like', "%$request->key%");
+        });
+
+        $productPrices = $productPrices->orderByDesc('product_id')->paginate(config('base.pagination'));
+        $compact = [
+            'pageName',
+            'request',
+            'store',
+            'productPrices'
+        ];
+        
+        return view('admin.store.show', compact($compact));
     }
 }

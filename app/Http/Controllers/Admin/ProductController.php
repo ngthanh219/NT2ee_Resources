@@ -204,6 +204,15 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
             $product = Product::findOrFail($id);
+            $product->load('prices');
+
+            if ($product->prices->count() > 0) {
+                return redirect()->back()->with('noti', [
+                    'type' => config('base.noti.error'),
+                    'message' => 'Không thể xóa sản phẩm đã có loại sản phẩm'
+                ]);
+            }
+
             $product->prices()->delete();
             $product->categories()->sync([]);
 
@@ -274,7 +283,16 @@ class ProductController extends Controller
         try {
             Product::findOrFail($id);
             $productPrice = ProductPrice::findOrFail($productPriceId);
-            $productPrice->delete();       
+            $productPrice->load('orderDetails');
+
+            if ($productPrice->orderDetails->count() > 0) {
+                return redirect()->route('products.edit', $id)->with('noti', [
+                    'type' => config('base.noti.error'),
+                    'message' => 'Không thể xóa loại sản phẩm đã có đơn hàng'
+                ]);
+            }
+
+            $productPrice->delete();
 
             return redirect()->route('products.edit', $id)->with('noti', [
                 'type' => config('base.noti.success'),

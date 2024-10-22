@@ -124,6 +124,14 @@ class UserController extends Controller
                 ]);
             }
 
+            $user->load('orders');
+            if ($user->orders->count() > 0) {
+                return redirect()->back()->with('noti', [
+                    'type' => config('base.noti.error'),
+                    'message' => 'Không thể xóa tài khoản đã có đơn hàng'
+                ]);
+            }
+
             $user->delete();
 
             return redirect()->back()->with('noti', [
