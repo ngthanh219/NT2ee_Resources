@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductPrice;
+use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,11 @@ class DashboardController extends Controller
             $threeYears[] = $currentYear - $i;
         }
 
+        $stores = [];
+        if (config('base.env.multi_store')) {
+            $stores = Store::orderByDesc('id')->get();
+        }
+
         $compact = [
             'pageName',
             'request',
@@ -39,7 +45,8 @@ class DashboardController extends Controller
             'productCount',
             'orderCount',
             'orderTotalSum',
-            'threeYears'
+            'threeYears',
+            'stores'
         ];
 
         return view('admin.dashboard', compact($compact));
@@ -57,9 +64,10 @@ class DashboardController extends Controller
         //     ];
         // }
 
-        $orderDetailsSub = DB::table('order_details')
-            ->select(DB::raw('order_id, sum(quantity) as quantity, sum(total) as total'))
-            ->groupBy('order_id');
+        $orderDetailsSub = DB::table('order_details')->select(DB::raw('order_id, sum(quantity) as quantity, sum(total) as total'))->groupBy('order_id');
+        if (isset($request->store_id) && $request->store_id != 0) {
+            $orderDetailsSub = $orderDetailsSub->where('store_id', $request->store_id);
+        }
 
         $successOrder = DB::table('orders')
             ->joinSub($orderDetailsSub, 'order_details', function ($join) {

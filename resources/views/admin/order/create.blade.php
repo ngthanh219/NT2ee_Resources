@@ -143,8 +143,29 @@
                             </div>
                             <div class="x_content">
                                 <br>
-                                <div class="form-group row">
-                                    <div class="col-md-12">
+                                @if (config('base.env.multi_store'))
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 ">Chi nhánh *</label>
+                                        <div class="col-md-9 col-sm-9 ">
+                                            <select class="form-control" name="store_id" id="select2" onchange="location = this.options[this.selectedIndex].getAttribute('data-href');">
+                                                @foreach ($stores as $store)
+                                                    <option
+                                                        data-href="{{ route('orders.create', ['store_id' => $store->id]) }}"
+                                                        value="{{ $store->id }}"
+                                                        {{ isset($request->store_id) && $request->store_id == $store->id ? 'selected' : '' }}
+                                                    >
+                                                        {{ $store->address }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('store_id'))
+                                                <div class="error-text">{{ $errors->first('store_id') }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+                                <div class="form-group">
+                                    <div class="col-md-12 pl-0 pr-0">
                                         <div class="col-md-7">
                                             <label class="control-label">Sản phẩm *</label>
                                             <select class="form-control" id="select2-products">
@@ -154,7 +175,7 @@
                                                         <option
                                                             value="{{ $price->id }}"
                                                             data-name="{{ $product->name . ' - ' . $price->attribute_names }}"
-                                                            data-quantity="{{ $price->quantity }}"
+                                                            data-quantity="{{ config('base.env.multi_store') ? $price->inventory->quantity : $price->quantity }}"
                                                             data-price="{{ $price->sale_price }}"
                                                         >
                                                             {{ $product->name . ' - ' . $price->attribute_names . ': ' . number_format($price->sale_price) }}đ

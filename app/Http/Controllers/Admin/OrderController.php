@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
+use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
@@ -61,12 +62,35 @@ class OrderController extends Controller
         try {
             $pageName = 'Thêm thông tin';
             $users = User::where('role_id', config('base.role_id.customer'))->orderByDesc('id')->get();
-            $stores = Store::orderByDesc('id')->get();
-            $products = Product::with([
-                'prices' => function ($price) {
-                    return $price->where('quantity', '>', 0)->orderBy('sale_price');
+            $stores = [];
+
+            if (!config('base.env.multi_store')) {
+                $products = Product::with([
+                    'prices' => function ($price) {
+                        return $price->where('quantity', '>', 0)->orderBy('sale_price');
+                    }
+                ])->orderByDesc('id')->get();
+            } else {
+                $stores = Store::orderByDesc('id')->get();
+                $storeId = null;
+
+                if (count($stores) > 0) {
+                    $storeId = $stores[0]->id;
                 }
-            ])->orderByDesc('id')->get();
+
+                if (isset($request->store_id)) {
+                    $storeId = $request->store_id;
+                }
+
+                $products = Product::with([
+                    'prices' => function ($price) {
+                        return $price->with('inventory')->orderBy('sale_price');
+                    }
+                ])->whereHas('prices.inventory', function ($inventory) use ($storeId) {
+                    return $inventory->where('store_id', $storeId)->where('quantity', '>', 0);
+                })->orderByDesc('id')->get();
+            }
+
             $orderStatusName = Helper::getOrderStatusName(false);
             $isPaidName = Helper::getIsPaidName(false);
             $compact = [
@@ -100,9 +124,12 @@ class OrderController extends Controller
                 'is_paid' => $request->is_paid
             ];
             $orderDetailData = [];
-
             $productPriceIds = array_values(array_keys($request->product));
             $productPrices = ProductPrice::with('product')->whereIn('id', $productPriceIds)->get();
+
+            if (config('base.env.multi_store')) {
+                $store = Store::findOrFail($request->store_id);
+            }
 
             if (count($productPriceIds) != count($productPrices)) {
                 return redirect()->back()->with('noti', [
@@ -115,7 +142,7 @@ class OrderController extends Controller
                 $quantity = $request->product[$price->id];
                 $orderDetailTotal = $price->sale_price * $quantity;
                 $orderData['total'] += $orderDetailTotal;
-                $orderDetailData[] = [
+                $orderDetailDataItem = [
                     'product_price_id' => $price->id,
                     'product_name' => $price->product->name . ' - ' . $price->attribute_names,
                     'product_price' => $price->sale_price,
@@ -124,6 +151,12 @@ class OrderController extends Controller
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
+
+                if (config('base.env.multi_store')) {
+                    $orderDetailDataItem['store_id'] = $store->id;
+                }
+
+                $orderDetailData[] = $orderDetailDataItem;
             }
         } catch (\Exception $ex) {
             dd($ex->getMessage());
@@ -135,10 +168,18 @@ class OrderController extends Controller
 
             foreach ($orderDetailData as &$item) {
                 $item['order_id'] = $order->id;
-                $productPrice = ProductPrice::findOrFail($item['product_price_id']);
-                $productPrice->update([
-                    'quantity' => $productPrice->quantity - $item['quantity']
-                ]);
+
+                if (!config('base.env.multi_store')) {
+                    $productPrice = ProductPrice::findOrFail($item['product_price_id']);
+                    $productPrice->update([
+                        'quantity' => $productPrice->quantity - $item['quantity']
+                    ]);
+                } else {
+                    $inventory = Inventory::where('store_id', $item['store_id'])->where('product_price_id', $item['product_price_id'])->first();
+                    $inventory->update([
+                        'quantity' => $inventory->quantity - $item['quantity']
+                    ]);
+                }
             }
 
             OrderDetail::insert($orderDetailData);
@@ -160,7 +201,7 @@ class OrderController extends Controller
             $order = Order::findOrFail($id)->load([
                 'user',
                 'orderDetails' => function ($orderDetail) {
-                    return $orderDetail->with('productPrice');
+                    return $orderDetail->with(['productPrice', 'store']);
                 }
             ]);
             $pageName = 'Thông tin dữ liệu';

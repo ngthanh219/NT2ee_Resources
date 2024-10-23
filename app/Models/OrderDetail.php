@@ -23,4 +23,9 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(ProductPrice::class, 'product_price_id', 'id');
     }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class, 'store_id', 'id');
+    }
 }

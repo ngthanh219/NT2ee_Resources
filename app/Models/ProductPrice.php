@@ -34,6 +34,10 @@ class ProductPrice extends Model
 
     public function getAttributeNamesAttribute()
     {
+        if ($this->attributes['attribute_ids'] == null) {
+            return 'Mặc định';
+        }
+
         $attributeIds = json_decode($this->attributes['attribute_ids'], true);
         $attributeNames = Attribute::whereIn('id', $attributeIds)->orderBy('type')->pluck('name')->toArray();
         $name = '';
@@ -59,8 +63,8 @@ class ProductPrice extends Model
         return $this->hasMany(OrderDetail::class, 'product_price_id', 'id');
     }
 
-    public function inventories()
+    public function inventory()
     {
-        return $this->hasMany(Inventory::class, 'product_price_id');
+        return $this->hasOne(Inventory::class, 'product_price_id');
     }
 }

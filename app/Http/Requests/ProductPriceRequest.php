@@ -14,7 +14,7 @@ class ProductPriceRequest extends FormRequest
     public function rules()
     {
         return [
-            'attribute_ids' => 'required',
+            'attribute_ids' => 'nullable|array',
             'quantity' => 'required|numeric|min:0',
             'price' => 'required|numeric|min:0|max:999999999',
             'sale_percent' => 'required|numeric|min:0|max:100',

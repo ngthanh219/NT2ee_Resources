@@ -44,7 +44,6 @@
         <div class="row" style="display: block;">
             <div class="col-md-12 col-sm-12">
                 <div class="dashboard_graph">
-
                     <div class="row x_title">
                         <div class="col-md-2">
                             <label>Thống kê</label>
@@ -56,6 +55,19 @@
                                 @endforeach
                             </select>
                         </div>
+                        @if (config('base.env.multi_store'))
+                            <div class="col-md-2">
+                                <label>Chi nhánh</label>
+                                <select class="form-control" id="store-id">
+                                    <option value="0">Tất cả</option>
+                                    @foreach ($stores as $store)
+                                        <option value="{{ $store->id }}">
+                                            {{ $store->address }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
                         <div class="col-md-2">
                             <label>Bắt đầu</label>
                             <input type="date" id="start-at" class="form-control">
@@ -95,6 +107,7 @@
         var chart = null;
         var chart1 = null;
         var year = null;
+        var storeId = null;
         var startAt = null;
         var finishAt = null;
 
@@ -102,6 +115,10 @@
             var param = '';
             if (year != null) {
                 param = '?year=' + year;
+            }
+
+            if (storeId != null) {
+                param += '&store_id=' + storeId;
             }
 
             if (startAt) {
@@ -236,6 +253,12 @@
             year = document.getElementById('year').value;
             startAt = document.getElementById('start-at').value;
             finishAt = document.getElementById('finish-at').value;
+
+            var storeIdEle = document.getElementById('store-id');
+            if (storeIdEle) {
+                storeId = storeIdEle.value;
+            }
+
             getChart();
         }
 

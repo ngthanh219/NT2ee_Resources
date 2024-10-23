@@ -172,6 +172,7 @@ return [
         'location'              => 'vị trí',
         'product'               => 'sản phẩm',
         'user_id'               => 'tài khoản',
-        'short_description'     => 'mô tả ngắn'
+        'short_description'     => 'mô tả ngắn',
+        'store_id'              => 'chi nhánh'
     ],
 ];

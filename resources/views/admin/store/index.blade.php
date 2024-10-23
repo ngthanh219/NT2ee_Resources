@@ -85,10 +85,12 @@
                                                         class="btn btn-primary btn-sm">
                                                         Chỉnh sửa
                                                     </a>
-                                                    <a href="{{ route('stores.show', $store->id) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        Kho sản phẩm
-                                                    </a>
+                                                    @if (config('base.env.multi_store'))
+                                                        <a href="{{ route('stores.show', $store->id) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            Kho sản phẩm
+                                                        </a>
+                                                    @endif
                                                     <form action="{{ route('stores.destroy', $store->id) }}" method="POST">
                                                         @method('DELETE')
                                                         @csrf

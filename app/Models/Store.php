@@ -30,4 +30,13 @@ class Store extends Model
         return 'Đang ẩn';
     }
 
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'store_id', 'id');
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'store_id', 'id');
+    }
 }

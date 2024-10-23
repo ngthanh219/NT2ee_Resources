@@ -13,6 +13,7 @@ class OrderRequest extends FormRequest
 
     public function rules()
     {
+        $storeId = 'nullable';
         $userId = 'required';
         $product = 'required';
 
@@ -20,13 +21,19 @@ class OrderRequest extends FormRequest
             $userId = 'required|numeric|min:1';
         }
 
+        if (config('base.env.multi_store')) {
+            $storeId = 'required';
+        }
+
         if ($this->method() === 'PUT') {
             $userId = 'nullable';
             $product = 'nullable';
+            $storeId = 'nullable';
         }
 
         return [
             'user_id' => $userId,
+            'store_id' => $storeId,
             'name' => 'required|max:255',
             'email' => 'required|max:255|email',
             'phone' => 'required|regex:/(0)[0-9]{9}/|digits:10',

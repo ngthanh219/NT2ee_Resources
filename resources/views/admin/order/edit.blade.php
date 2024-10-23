@@ -142,6 +142,9 @@
                                         <thead>
                                             <tr class="headings">
                                                 <th class="column-title" width="500px">Sản phẩm</th>
+                                                @if (config('base.env.multi_store'))
+                                                    <th class="column-title" width="500px">Chi nhánh</th>
+                                                @endif
                                                 <th class="column-title">Giá bán</th>
                                                 <th class="column-title" width="100px">Số lượng</th>
                                                 <th class="column-title" width="200px">Thành tiền</th>
@@ -150,9 +153,11 @@
 
                                         <tbody id="cart">
                                             @foreach ($order->orderDetails as $orderDetail)
-                                                <tr id="cart-item-{{ $orderDetail->product_price_id }}"
-                                                    data-price="{{ $orderDetail->product_price }}">
+                                                <tr id="cart-item-{{ $orderDetail->product_price_id }}" data-price="{{ $orderDetail->product_price }}">
                                                     <td>{{ $orderDetail->product_name }}</td>
+                                                    @if (config('base.env.multi_store'))
+                                                        <td>{{ $orderDetail->store->address ?? 'Kho tổng' }}</td>
+                                                    @endif
                                                     <td>{{ number_format($orderDetail->product_price) }}đ</td>
                                                     <td>
                                                         {{ $orderDetail->quantity }}

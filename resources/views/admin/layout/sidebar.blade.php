@@ -47,7 +47,7 @@
                     <li class="{{ request()->is('*stores*') ? 'active' : '' }}">
                         <a href="{{ route('stores.index') }}">
                             <i class="fa fa-location-arrow"></i>
-                            Hệ thống cửa hàng
+                            Chi nhánh cửa hàng
                         </a>
                     </li>
 

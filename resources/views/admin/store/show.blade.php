@@ -6,7 +6,6 @@
                 <h3>
                     {{ $pageName }}
                 </h3>
-                <a href="{{ route('stores.create') }}" class="btn btn-primary">Thêm thông tin</a>
             </div>
 
             <div class="title_right">
@@ -39,8 +38,9 @@
                                     <tr class="headings">
                                         <th class="column-title">STT</th>
                                         <th class="column-title">Sản phẩm</th>
-                                        <th class="column-title" width="200px">Số lượng chi nhánh</th>
-                                        <th class="column-title">Số lượng trong kho</th>
+                                        <th class="column-title" width="200px">SL trong chi nhánh</th>
+                                        <th class="column-title">SL trong kho</th>
+                                        <th class="column-title">SL yêu cầu</th>
                                         <th class="column-title no-link last">
                                             <span class="nobr">Hành động</span>
                                         </th>
@@ -50,21 +50,46 @@
                                 @if (count($productPrices))
                                     <tbody>
                                         @foreach ($productPrices as $index => $productPrice)
-                                            <tr class="even pointer">
-                                                <td>{{ $index += 1 }}</td>
-                                                <td>{{ '#' . $productPrice->id . ': ' . $productPrice->product->name . ' (' . $productPrice->attribute_names }})</td>
-                                                <td>
-                                                    <input type="number" class="form-control" id="quantity[{{ $productPrice }}]" min="0" value="{{ 0 }}" />
-                                                </td>
-                                                <td>
-                                                    {{ $productPrice->quantity }}
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btn btn-primary btn-sm">
-                                                        Cập nhật
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                            <form
+                                                action="{{ route('stores.supply.product', $store->id) }}"
+                                                method="POST"
+                                                id="form"
+                                            >
+                                                @csrf
+                                                <input type="hidden" name="type" id="type-{{ $productPrice->id }}">
+                                                <input type="hidden" name="product_price_id" value="{{ $productPrice->id }}">
+                                                <tr class="even pointer">
+                                                    <td>{{ $index += 1 }}</td>
+                                                    <td>{{ '#' . $productPrice->id . ': ' . $productPrice->product->name . ' (' . $productPrice->attribute_names }})
+                                                    </td>
+                                                    <td>
+                                                        {{ $productPrice->inventory ? $productPrice->inventory->quantity : 0 }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $productPrice->quantity }}
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="number"
+                                                            class="form-control"
+                                                            name="quantity"
+                                                            min="0"
+                                                            value="{{ old('quantity') ? (old('product_price_id') == $productPrice->id ? old('quantity') : 0) :  0 }}"
+                                                        />
+                                                        @if ($errors->has('quantity') && old('product_price_id') == $productPrice->id)
+                                                            <div class="error-text">{{ $errors->first('quantity') }}</div>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-outline-primary btn-sm" onclick="submitForm('import', {{ $productPrice->id }})">
+                                                            Nhập SP vào chi nhánh
+                                                        </button>
+                                                        <button class="btn btn-outline-danger btn-sm" onclick="submitForm('export', {{ $productPrice->id }})">
+                                                            Xuất SP về kho
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </form>
                                         @endforeach
                                     </tbody>
                                 @else
@@ -79,7 +104,8 @@
                         <div class="row">
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
-                                    Hiển thị {{ $productPrices->firstItem() }} đến {{ $productPrices->lastItem() }} trong tổng số
+                                    Hiển thị {{ $productPrices->firstItem() }} đến {{ $productPrices->lastItem() }} trong
+                                    tổng số
                                     {{ $productPrices->total() }} dữ liệu
                                 </div>
                             </div>
@@ -109,4 +135,11 @@
 @endsection
 
 @section('script')
+    <script>
+        function submitForm(type, productPriceId) {
+            var typeValue = type === 'import' ? "{{ config('base.supply_type.import') }}" : "{{ config('base.supply_type.export') }}";
+            document.getElementById('type-' + productPriceId).value = typeValue;
+            document.getElementById('form').submit();
+        }
+    </script>
 @endsection

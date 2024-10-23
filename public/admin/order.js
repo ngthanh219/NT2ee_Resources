@@ -64,48 +64,58 @@ function addCart(e) {
         var cartEle = document.getElementById('cart');
         var noData = cartEle.querySelector('.no-data');
         var currentQuantity = document.getElementById('current-quantity').value;
-        var data = `
-            <tr id="cart-item-${selectedProductPriceId}" data-price="${selectedPrice}">
-                <td>${selectedName}</td>
-                <td>${(selectedPrice).toLocaleString('en-US') + 'đ'}</td>
-                <td>
-                    <input type="number" min="0" max="${selectedQuantityLimit}" class="form-control" id="cart-item-${selectedProductPriceId}-quantity" name="product[${selectedProductPriceId}]" onchange="changeQuantity(event, ${selectedProductPriceId})" value="${currentQuantity}" />
-                </td>
-                <td id="cart-item-${selectedProductPriceId}-total">
-                    ${(parseInt(selectedPrice) * parseInt(currentQuantity)).toLocaleString('en-US') + 'đ'}
-                </td>
-                <td>
-                    <a href="#" onclick="deleteItem(event, ${selectedProductPriceId})" class="btn btn-danger">Xóa</a>
-                </td>
-            </tr>
-        `;
 
-        if (noData) {
-            cartEle.innerHTML = data;
+        if (currentQuantity > selectedQuantityLimit) {
+            alert('Sản phẩm không đủ số lượng');
         } else {
-            var existItem = cartEle.querySelector('#cart-item-' + selectedProductPriceId);
+            var data = `
+                <tr id="cart-item-${selectedProductPriceId}" data-price="${selectedPrice}">
+                    <td>${selectedName}</td>
+                    <td>${(selectedPrice).toLocaleString('en-US') + 'đ'}</td>
+                    <td>
+                        <input type="number" min="0" max="${selectedQuantityLimit}" class="form-control" id="cart-item-${selectedProductPriceId}-quantity" name="product[${selectedProductPriceId}]" onchange="changeQuantity(event, ${selectedProductPriceId})" value="${currentQuantity}" />
+                    </td>
+                    <td id="cart-item-${selectedProductPriceId}-total">
+                        ${(parseInt(selectedPrice) * parseInt(currentQuantity)).toLocaleString('en-US') + 'đ'}
+                    </td>
+                    <td>
+                        <a href="#" onclick="deleteItem(event, ${selectedProductPriceId})" class="btn btn-danger">Xóa</a>
+                    </td>
+                </tr>
+            `;
 
-            if (existItem) {
-                var cartItemQuantityEle = document.getElementById('cart-item-' + selectedProductPriceId + '-quantity');
-                var updatedCartItemQuantity = parseInt(cartItemQuantityEle.value) + parseInt(currentQuantity);
-
-                if (updatedCartItemQuantity > selectedQuantityLimit) {
-                    alert('Sản phẩm không đủ số lượng')
-                } else {
-                    cartItemQuantityEle.value = updatedCartItemQuantity;
-                    var cartItemTotal = document.getElementById('cart-item-' + selectedProductPriceId + '-total');
-                    cartItemTotal.innerHTML = (parseInt(selectedPrice) * updatedCartItemQuantity).toLocaleString('en-US') + 'đ';
-                }
+            if (noData) {
+                cartEle.innerHTML = data;
             } else {
-                cartEle.insertAdjacentHTML('beforeend', data);
-            }
-        }
+                var existItem = cartEle.querySelector('#cart-item-' + selectedProductPriceId);
 
-        updateCartTotal();
+                if (existItem) {
+                    var cartItemQuantityEle = document.getElementById('cart-item-' + selectedProductPriceId + '-quantity');
+                    var updatedCartItemQuantity = parseInt(cartItemQuantityEle.value) + parseInt(currentQuantity);
+
+                    if (updatedCartItemQuantity > selectedQuantityLimit) {
+                        alert('Sản phẩm không đủ số lượng')
+                    } else {
+                        cartItemQuantityEle.value = updatedCartItemQuantity;
+                        var cartItemTotal = document.getElementById('cart-item-' + selectedProductPriceId + '-total');
+                        cartItemTotal.innerHTML = (parseInt(selectedPrice) * updatedCartItemQuantity).toLocaleString('en-US') + 'đ';
+                    }
+                } else {
+                    cartEle.insertAdjacentHTML('beforeend', data);
+                }
+            }
+
+            updateCartTotal();
+        }
     }
 }
 
 function changeQuantity(e, productPriceId) {
+    if (e.target.value > e.target.max) {
+        alert('Sản phẩm không đủ số lượng');
+        e.target.value = e.target.max;
+    }
+
     var cartItemEle = document.getElementById('cart-item-' + productPriceId);
     var price = cartItemEle.getAttribute('data-price');
 

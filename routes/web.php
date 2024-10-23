@@ -39,6 +39,7 @@ Route::group([
 
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
         Route::post('products/{product}/prices', [ProductController::class, 'createProductPrices'])->name('products.prices.store');
+        Route::post('stores/{store}/supply-product', [StoreController::class, 'supplyProduct'])->name('stores.supply.product');
 
         Route::delete('products/{product}/prices/{product_price_id}', [ProductController::class, 'deleteProductPrices'])->name('products.prices.destroy');
 

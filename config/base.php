@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'env' => [
+        'multi_store' => env('APP_MULTI_STORE', false),
+        'payment_vnpay' => env('APP_PAYMENT_VNPAY', false)
+    ],
     'role_id' => [
         'admin' => 0,
         'manage' => 1,
@@ -68,5 +72,13 @@ return [
         0 => 'Tất cả',
         1 => 'Loại màu',
         2 => 'Loại phiên bản',
-    ]
+    ],
+    'supply_type' => [
+        'import' => 0,
+        'export' => 1
+    ],
+    'supply_type_name' => [
+        0 => 'Nhập',
+        1 => 'Xuất'
+    ],
 ];
