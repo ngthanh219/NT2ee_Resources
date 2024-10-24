@@ -11,7 +11,7 @@
 
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 form-group pull-right top_search">
-                    @include('admin.store.search')
+                    @include('admin.common.search', ['route' => 'stores.index'])
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
                         <div class="table-responsive">
                             @include('admin.store.table')
                         </div>
-                        @include('admin.store.pagination')
+                        @include('admin.common.pagination', ['model' => $stores])
                     </div>
                 </div>
             </div>

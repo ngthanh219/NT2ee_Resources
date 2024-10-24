@@ -11,7 +11,7 @@
 
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 form-group pull-right top_search">
-                    @include('admin.user.search')
+                    @include('admin.common.search', ['route' => 'users.index'])
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
                         <div class="table-responsive">
                             @include('admin.user.table')
                         </div>
-                        @include('admin.user.pagination')
+                        @include('admin.common.pagination', ['model' => $users])
                     </div>
                 </div>
             </div>

@@ -10,18 +10,7 @@
 
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 form-group pull-right top_search">
-                    <form class="input-group" method="GET" action="{{ route('stores.show', $store->id) }}">
-                        @foreach ($request->all() as $key => $item)
-                            @if ($key != 'key')
-                                <input type="hidden" name="{{ $key }}" value="{{ $item }}">
-                            @endif
-                        @endforeach
-                        <input type="text" name="key" class="form-control" placeholder="Tìm kiếm tên sản phẩm..."
-                            value="{{ isset($request->key) ? $request->key : '' }}">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="submit">Lọc</button>
-                        </span>
-                    </form>
+                    @include('admin.common.search', ['route' => 'stores.show', 'param' => $store->id])
                 </div>
             </div>
         </div>
@@ -101,32 +90,7 @@
                                 @endif
                             </table>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
-                                    Hiển thị {{ $productPrices->firstItem() }} đến {{ $productPrices->lastItem() }} trong
-                                    tổng số
-                                    {{ $productPrices->total() }} dữ liệu
-                                </div>
-                            </div>
-                            <div class="col-sm-7">
-                                <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
-                                    <ul class="pagination">
-                                        @foreach ($productPrices->links()->elements[0] as $key => $item)
-                                            @if ($productPrices->links()->paginator->currentPage() == $key)
-                                                <li class="active">
-                                                    <a>{{ $key }}</a>
-                                                </li>
-                                            @else
-                                                <li>
-                                                    <a href="{{ $item }}">{{ $key }}</a>
-                                                </li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        @include('admin.common.pagination', ['model' => $productPrices])
                     </div>
                 </div>
             </div>

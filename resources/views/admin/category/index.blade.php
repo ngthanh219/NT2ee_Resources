@@ -12,7 +12,7 @@
 
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 form-group pull-right top_search">
-                    @include('admin.category.search')
+                    @include('admin.common.search', ['route' => 'categories.index'])
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                         <div class="table-responsive">
                             @include('admin.category.table')
                         </div>
-                        @include('admin.category.pagination')
+                        @include('admin.common.pagination', ['model' => $categories])
                     </div>
                 </div>
             </div>

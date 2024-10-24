@@ -1,4 +1,4 @@
-<form class="input-group" method="GET" action="{{ route('products.index') }}">
+<form class="input-group" method="GET" action="{{ route($route, $param ?? []) }}">
     @foreach ($request->all() as $key => $item)
         @if ($key != 'key')
             <input type="hidden" name="{{ $key }}" value="{{ $item }}">
