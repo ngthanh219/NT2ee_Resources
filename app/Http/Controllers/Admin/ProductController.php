@@ -319,9 +319,10 @@ class ProductController extends Controller
     public function deleteProductPrices(Request $request, $id, $productPriceId)
     {
         try {
+            DB::beginTransaction();
             Product::findOrFail($id);
             $productPrice = ProductPrice::findOrFail($productPriceId);
-            $productPrice->load('orderDetails');
+            $productPrice->load(['orderDetails', 'inventory']);
 
             if ($productPrice->orderDetails->count() > 0) {
                 return redirect()->route('products.edit', $id)->with('noti', [
@@ -330,13 +331,16 @@ class ProductController extends Controller
                 ]);
             }
 
+            $productPrice->inventory->delete();
             $productPrice->delete();
+            DB::commit();
 
             return redirect()->route('products.edit', $id)->with('noti', [
                 'type' => config('base.noti.success'),
                 'message' => 'Lưu thành công'
             ]);
         } catch (\Exception $ex) {
+            DB::rollBack();
             dd($ex->getMessage());
         }
     }
