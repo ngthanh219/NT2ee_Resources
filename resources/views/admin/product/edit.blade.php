@@ -156,8 +156,10 @@
                                     <div class="col-md-9 col-sm-9 ">
                                         <select class="form-control" name="attribute_ids[]">
                                             @foreach ($attribute['data'] as $item)
-                                                <option value="{{ $item['id'] }}"
-                                                    {{ isset($request->product_price_id) && in_array($item['id'], $productPrice->attribute_ids) ? 'selected' : '' }}>
+                                                <option
+                                                    value="{{ $item['id'] }}"
+                                                    {{ isset($request->product_price_id) && $productPrice->attribute_ids != null && in_array($item['id'], $productPrice->attribute_ids) ? 'selected' : '' }}
+                                                >
                                                     {{ $item['name'] }}
                                                 </option>
                                             @endforeach

@@ -85,7 +85,7 @@ class ProductController extends Controller
             if ($data['image']) {
                 foreach ($data['image'] as $image) {
                     Helper::removeFile($image);
-                } 
+                }
             }
 
             dd($ex->getMessage());
@@ -107,7 +107,7 @@ class ProductController extends Controller
             if ($data['image']) {
                 foreach ($data['image'] as $image) {
                     Helper::removeFile($image);
-                } 
+                }
             }
 
             DB::rollBack();
@@ -237,35 +237,73 @@ class ProductController extends Controller
     {
         try {
             Product::findOrFail($id);
-            $existAttributesCount = Attribute::whereIn('id', $request->attribute_ids)->count();
-            
-            if ($existAttributesCount != count($request->attribute_ids)) {
-                return redirect()->back()->with('noti', [
-                    'type' => config('base.noti.error'),
-                    'message' => 'Loại sản phẩm không hợp lệ'
-                ])->withInput();
-            }
+            $data = $request->all();
 
-            $productPrices = ProductPrice::where('product_id', $id)->get();
+            if (isset($request->attribute_ids)) {
+                $attributeIds = $request->attribute_ids;
 
-            foreach ($productPrices as $productPrice) {
-                $productPriceCount = 0;
-
-                foreach ($request->attribute_ids as $attributeId) {
-                    if (in_array($attributeId, $productPrice->attribute_ids)) {
-                        $productPriceCount++;
+                foreach ($attributeIds as $key => $value) {
+                    if ($value == '0') {
+                        unset($attributeIds[$key]);
                     }
                 }
 
-                if ($productPriceCount == count($request->attribute_ids)) {
-                    return redirect()->back()->with('noti', [
-                        'type' => config('base.noti.error'),
-                        'message' => 'Loại sản phẩm đã tồn tại'
-                    ])->withInput();
+                $attributeIds = array_values($attributeIds);
+
+                if ($attributeIds) {
+                    $existAttributesCount = Attribute::whereIn('id', $attributeIds)->count();
+
+                    if ($existAttributesCount != count($attributeIds)) {
+                        return redirect()->back()->with('noti', [
+                            'type' => config('base.noti.error'),
+                            'message' => 'Loại sản phẩm không hợp lệ'
+                        ])->withInput();
+                    }
+
+                    $productPrices = ProductPrice::where('product_id', $id)
+                        ->where('attribute_ids', '!=', null)
+                        ->get();
+
+                    foreach ($productPrices as $productPrice) {
+                        $attributeCount = count($productPrice->attribute_ids);
+
+                        foreach ($attributeIds as $attributeId) {
+                            if (in_array($attributeId, $productPrice->attribute_ids)) {
+                                $attributeCount--;
+                            }
+                        }
+
+                        if ($attributeCount == 0) {
+                            return redirect()->back()->with('noti', [
+                                'type' => config('base.noti.error'),
+                                'message' => 'Loại sản phẩm đã tồn tại'
+                            ])->withInput();
+                        }
+                    }
+                    foreach ($attributeIds as $key => $value) {
+                        if ($value == '0') {
+                            unset($attributeIds[$key]);
+                        }
+                    }
+
+                    $attributeIds = array_values($attributeIds);
+                    $data['attribute_ids'] = $attributeIds;
+                } else {
+                    $productPriceCount = ProductPrice::where('product_id', $id)
+                        ->where('attribute_ids', null)
+                        ->count();
+
+                    if ($productPriceCount > 0) {
+                        return redirect()->back()->with('noti', [
+                            'type' => config('base.noti.error'),
+                            'message' => 'Loại sản phẩm đã tồn tại'
+                        ])->withInput();
+                    }
+
+                    unset($data['attribute_ids']);
                 }
             }
-            
-            $data = $request->all();
+
             $data['product_id'] = $id;
             ProductPrice::create($data);
 

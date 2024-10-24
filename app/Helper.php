@@ -61,7 +61,13 @@ class Helper
             $attributes[] = [
                 'type' => $type,
                 'name' => $typeName,
-                'data' => Attribute::where('type', $type)->get(['id', 'name', 'description'])->toArray()
+                'data' => array_merge([
+                    [
+                        'id' => 0,
+                        'name' => '-- Không có --',
+                        'description' => 'Không có giá trị'
+                    ]
+                ], Attribute::where('type', $type)->get(['id', 'name', 'description'])->toArray())
             ];
         }
 
