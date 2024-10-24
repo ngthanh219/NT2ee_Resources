@@ -41,7 +41,7 @@ class AuthController extends Controller
                 return redirect()->back()->with('noti', [
                     'type' => config('base.noti.error'),
                     'message' => 'Thông tin không chính xác'
-                ]);
+                ])->withInput();
             }
             
             return redirect()->route('users.index');
