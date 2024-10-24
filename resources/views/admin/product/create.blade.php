@@ -73,6 +73,54 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row">
+                                <label class="control-label col-md-3 col-sm-3 ">Trạng thái mới *</label>
+                                <div class="col-md-9 col-sm-9 ">
+                                    <select class="form-control" name="is_new">
+                                        @foreach ($isNewName as $index => $name)
+                                            <option value="{{ $index }}">
+                                                {{ $name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('is_new'))
+                                        <div class="error-text">{{ $errors->first('is_new') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3 col-sm-3 ">Trạng thái nổi bật *</label>
+                                <div class="col-md-9 col-sm-9 ">
+                                    <select class="form-control" name="is_hot">
+                                        @foreach ($isHotName as $index => $name)
+                                            <option value="{{ $index }}">
+                                                {{ $name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('is_hot'))
+                                        <div class="error-text">{{ $errors->first('is_hot') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3 col-sm-3 ">Trạng thái bán chạy *</label>
+                                <div class="col-md-9 col-sm-9 ">
+                                    <select class="form-control" name="is_best_seller">
+                                        @foreach ($isBestSellerName as $index => $name)
+                                            <option value="{{ $index }}">
+                                                {{ $name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('is_best_seller'))
+                                        <div class="error-text">{{ $errors->first('is_best_seller') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+
                             <div class="form-group row ">
                                 <label class="control-label col-md-3 col-sm-3 ">Hình ảnh *</label>
                                 <div class="col-md-9 col-sm-9 ">

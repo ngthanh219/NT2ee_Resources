@@ -18,9 +18,7 @@ class AttributeController extends Controller
             $attributes = Attribute::orderByDesc('id');
 
             if (isset($request->key)) {
-                $attributes->where(function ($query) use ($request) {
-                    return $query->where('name', 'like', "%$request->key%");
-                });
+                $attributes->where('name', 'like', "%$request->key%");
             }
 
             if (isset($request->type) && $request->type != config('base.attribute_type.all')) {

@@ -8,14 +8,14 @@
             {{ isset($request->role_id) && $request->role_id == config('base.role_id.admin') ? 'selected' : '' }}>
             Admin
         </option>
-        <option value="{{ route('users.index', ['role_id' => config('base.role_id.manage')] + $request->all()) }}"
+        {{-- <option value="{{ route('users.index', ['role_id' => config('base.role_id.manage')] + $request->all()) }}"
             {{ isset($request->role_id) && $request->role_id == config('base.role_id.manage') ? 'selected' : '' }}>
             Quản lý
         </option>
         <option value="{{ route('users.index', ['role_id' => config('base.role_id.staff')] + $request->all()) }}"
             {{ isset($request->role_id) && $request->role_id == config('base.role_id.staff') ? 'selected' : '' }}>
             Nhân viên
-        </option>
+        </option> --}}
         <option value="{{ route('users.index', ['role_id' => config('base.role_id.customer')] + $request->all()) }}"
             {{ isset($request->role_id) && $request->role_id == config('base.role_id.customer') ? 'selected' : '' }}>
             Khách hàng

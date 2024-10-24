@@ -5,6 +5,9 @@
             <th class="column-title">Hình ảnh</th>
             <th class="column-title">Sản phẩm</th>
             <th class="column-title">Trạng thái hiển thị</th>
+            <th class="column-title">Trạng thái mới</th>
+            <th class="column-title">Trạng thái nổi bật</th>
+            <th class="column-title">Trạng thái bán chạy</th>
             <th class="column-title no-link last">
                 <span class="nobr">Hành động</span>
             </th>
@@ -21,6 +24,9 @@
                     </td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->view_name }}</td>
+                    <td>{{ $product->is_new_name }}</td>
+                    <td>{{ $product->is_hot_name }}</td>
+                    <td>{{ $product->is_best_seller_name }}</td>
                     <td>
                         <a href="{{ route('products.edit', $product->id) }}"
                             class="btn btn-primary btn-sm">
@@ -41,7 +47,7 @@
     @else
         <tbody>
             <tr>
-                <td colspan="6" class="text-center">Không có dữ liệu</td>
+                <td colspan="8" class="text-center">Không có dữ liệu</td>
             </tr>
         </tbody>
     @endif

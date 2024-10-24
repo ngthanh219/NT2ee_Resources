@@ -16,9 +16,7 @@ class CategoryController extends Controller
             $categories = Category::orderByDesc('id');
 
             if (isset($request->key)) {
-                $categories->where(function ($query) use ($request) {
-                    return $query->where('name', 'like', "%$request->key%");
-                });
+                $categories->where('name', 'like', "%$request->key%");
             }
 
             if (isset($request->parent_id) && $request->parent_id != 0) {

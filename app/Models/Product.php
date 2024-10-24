@@ -14,11 +14,17 @@ class Product extends Model
         'slug',
         'image',
         'description',
+        'is_new',
+        'is_hot',
+        'is_best_seller',
         'view'
     ];
 
     protected $appends = [
-        'view_name'
+        'view_name',
+        'is_new_name',
+        'is_hot_name',
+        'is_best_seller_name',
     ];
 
     public function getImageAttribute($value)
@@ -29,6 +35,21 @@ class Product extends Model
     public function setImageAttribute($value)
     {
         $this->attributes['image'] = json_encode($value);
+    }
+
+    public function getIsNewNameAttribute()
+    {
+        return config('base.is_new_name')[$this->is_new];
+    }
+
+    public function getIsHotNameAttribute()
+    {
+        return config('base.is_hot_name')[$this->is_hot];
+    }
+
+    public function getIsBestSellerNameAttribute()
+    {
+        return config('base.is_best_seller_name')[$this->is_best_seller];
     }
 
     public function getViewNameAttribute()

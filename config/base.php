@@ -5,10 +5,11 @@ return [
         'multi_store' => env('APP_MULTI_STORE', false),
         'payment_vnpay' => env('APP_PAYMENT_VNPAY', false)
     ],
+    'pagination' => 15,
     'role_id' => [
         'admin' => 0,
-        'manage' => 1,
-        'staff' => 2,
+        // 'manage' => 1,
+        // 'staff' => 2,
         'customer' => 3,
         'all' => 4
     ],
@@ -61,7 +62,6 @@ return [
         'success' => 0,
         'error' => 1
     ],
-    'pagination' => 15,
     'parent_category_default' => 0,
     'attribute_type' => [
         'all' => 0,
@@ -81,4 +81,34 @@ return [
         0 => 'Nhập',
         1 => 'Xuất'
     ],
+    'is_new' => [
+        'all' => 0,
+        'yes' => 1,
+        'no'  => 2
+    ],
+    'is_new_name' => [
+        0 => 'Tất cả',
+        1 => 'Mới',
+        2 => 'Bình thường'
+    ],
+    'is_hot' => [
+        'all' => 0,
+        'yes' => 1,
+        'no'  => 2
+    ],
+    'is_hot_name' => [
+        0 => 'Tất cả',
+        1 => 'Nổi bật',
+        2 => 'Bình thường'
+    ],
+    'is_best_seller' => [
+        'all' => 0,
+        'yes' => 1,
+        'no'  => 2
+    ],
+    'is_best_seller_name' => [
+        0 => 'Tất cả',
+        1 => 'Bán chạy',
+        2 => 'Bình thường'
+    ]
 ];

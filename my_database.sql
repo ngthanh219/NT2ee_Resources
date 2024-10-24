@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 18, 2024 at 02:03 PM
+-- Generation Time: Oct 24, 2024 at 11:31 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -95,7 +95,8 @@ CREATE TABLE `category_product` (
 
 INSERT INTO `category_product` (`category_id`, `product_id`) VALUES
 (11, 9),
-(11, 11);
+(11, 11),
+(12, 12);
 
 -- --------------------------------------------------------
 
@@ -129,6 +130,18 @@ CREATE TABLE `inventories` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `inventories`
+--
+
+INSERT INTO `inventories` (`id`, `store_id`, `product_price_id`, `quantity`, `view`, `created_at`, `updated_at`) VALUES
+(1, 2, 18, 3, 0, '2024-10-23 02:49:30', '2024-10-23 09:17:09'),
+(2, 2, 2, 3, 0, '2024-10-23 04:35:38', '2024-10-23 09:17:10'),
+(3, 2, 10, 2, 0, '2024-10-23 04:35:46', '2024-10-23 09:21:16'),
+(4, 2, 11, 3, 0, '2024-10-23 04:35:48', '2024-10-23 09:17:14'),
+(5, 2, 13, 3, 0, '2024-10-23 04:35:50', '2024-10-23 09:17:15'),
+(6, 1, 18, 0, 0, '2024-10-23 04:49:47', '2024-10-23 04:51:01');
+
 -- --------------------------------------------------------
 
 --
@@ -158,7 +171,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (10, '2024_10_08_095520_create_product_prices_table', 1),
 (11, '2024_10_08_100700_create_inventories_table', 1),
 (14, '2024_10_08_103409_create_orders_table', 2),
-(15, '2024_10_08_105115_create_order_details_table', 2);
+(15, '2024_10_08_105115_create_order_details_table', 2),
+(16, '2024_10_21_110735_add_restock_on_cancel_in_orders_table', 3),
+(19, '2024_10_21_172725_create_posts_table', 4),
+(20, '2024_10_24_153756_add_columns_in_products_table', 5);
 
 -- --------------------------------------------------------
 
@@ -178,6 +194,7 @@ CREATE TABLE `orders` (
   `payment_method` int(11) NOT NULL DEFAULT 0,
   `status` int(11) NOT NULL DEFAULT 1,
   `is_paid` int(11) NOT NULL DEFAULT 1,
+  `restock_on_cancel` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -186,10 +203,15 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `name`, `email`, `phone`, `address`, `note`, `total`, `payment_method`, `status`, `is_paid`, `created_at`, `updated_at`) VALUES
-(1, 5, 'hieuhv', 'hieuhv@gmail.com', '0965441254', 'Hà Nội', NULL, 123000000, 0, 1, 1, '2024-10-18 11:02:27', '2024-10-18 11:02:27'),
-(2, 3, 'Phương Linh', 'phlinh@gmail.com', '0987587966', 'Hà Nội', 'Đơn hàng thanh toán', 32299000, 0, 2, 2, '2024-10-18 12:01:00', '2024-10-18 12:01:00'),
-(3, 3, 'Phương Linh', 'phlinh@gmail.com', '0987587966', 'Hà Nội', NULL, 48500000, 0, 1, 1, '2024-10-18 12:01:44', '2024-10-18 12:01:44');
+INSERT INTO `orders` (`id`, `user_id`, `name`, `email`, `phone`, `address`, `note`, `total`, `payment_method`, `status`, `is_paid`, `restock_on_cancel`, `created_at`, `updated_at`) VALUES
+(1, 5, 'hieuhv', 'hieuhv@gmail.com', '0965441254', 'Hà Nội', NULL, 123000000, 0, 4, 2, 0, '2023-08-18 11:02:27', '2023-08-21 03:05:19'),
+(2, 3, 'Phương Linh', 'phlinh@gmail.com', '0987587966', 'Hà Nội', 'Đơn hàng thanh toán', 32299000, 0, 4, 2, 0, '2024-09-18 12:01:00', '2024-09-21 04:37:07'),
+(4, 5, 'hieuhv', 'hieuhv@gmail.com', '0965441254', 'Hà Nội', 'Giao hỏa tốc', 123497000, 0, 4, 2, 0, '2024-10-21 03:00:14', '2024-10-21 07:13:57'),
+(6, 5, 'hieuhv', 'hieuhv@gmail.com', '0965441254', 'Hà Nội', 'SSS', 121999000, 0, 4, 2, 0, '2024-10-21 04:37:38', '2024-10-21 07:14:05'),
+(8, 3, 'Phương Linh', 'phlinh@gmail.com', '0987587966', 'Hà Nội', NULL, 97000000, 0, 4, 2, 0, '2024-10-23 08:51:22', '2024-10-23 09:45:10'),
+(9, 3, 'Phương Linh', 'phlinh@gmail.com', '0987587966', 'Hà Nội', NULL, 421391000, 0, 4, 2, 0, '2024-10-23 09:16:03', '2024-10-23 09:45:07'),
+(10, 5, 'hieuhv', 'hieuhv@gmail.com', '0965441254', 'Hà Nội', NULL, 64598000, 0, 4, 2, 0, '2024-10-23 09:20:48', '2024-10-23 09:44:35'),
+(11, 5, 'hieuhv', 'hieuhv@gmail.com', '0965441254', 'Hà Nội', NULL, 32299000, 0, 4, 2, 0, '2024-10-23 09:21:16', '2024-10-23 09:44:26');
 
 -- --------------------------------------------------------
 
@@ -215,10 +237,21 @@ CREATE TABLE `order_details` (
 --
 
 INSERT INTO `order_details` (`id`, `order_id`, `store_id`, `product_price_id`, `product_name`, `product_price`, `quantity`, `total`, `created_at`, `updated_at`) VALUES
-(1, 1, NULL, 13, 'Iphone 15 pro max - Đen - 256GB', 26000000, 1, 26000000, '2024-10-18 11:02:27', '2024-10-18 11:02:27'),
-(2, 1, NULL, 18, 'Iphone 16 pro max - Vàng - 1TB', 48500000, 2, 97000000, '2024-10-18 11:02:27', '2024-10-18 11:02:27'),
-(3, 2, NULL, 10, 'Iphone 15 pro max - Trắng - 512GB', 32299000, 1, 32299000, '2024-10-18 12:01:00', '2024-10-18 12:01:00'),
-(4, 3, NULL, 18, 'Iphone 16 pro max - Vàng - 1TB', 48500000, 1, 48500000, '2024-10-18 12:01:44', '2024-10-18 12:01:44');
+(1, 1, NULL, 13, 'Iphone 15 pro max - Đen - 256GB', 26000000, 1, 26000000, '2023-08-18 11:02:27', '2023-08-18 11:02:27'),
+(2, 1, NULL, 18, 'Iphone 16 pro max - Vàng - 1TB', 48500000, 2, 97000000, '2023-08-18 11:02:27', '2023-08-18 11:02:27'),
+(3, 2, NULL, 10, 'Iphone 15 pro max - Trắng - 512GB', 32299000, 1, 32299000, '2024-09-18 12:01:00', '2024-09-18 12:01:00'),
+(5, 4, NULL, 2, 'Iphone 15 pro max - Trắng - 256GB', 24999000, 3, 74997000, '2024-10-21 03:00:14', '2024-10-21 03:00:14'),
+(6, 4, NULL, 18, 'Iphone 16 pro max - Vàng - 1TB', 48500000, 1, 48500000, '2024-10-21 03:00:14', '2024-10-21 03:00:14'),
+(9, 6, NULL, 2, 'Iphone 15 pro max - Trắng - 256GB', 24999000, 1, 24999000, '2024-10-21 04:37:38', '2024-10-21 04:37:38'),
+(10, 6, NULL, 18, 'Iphone 16 pro max - Vàng - 1TB', 48500000, 2, 97000000, '2024-10-21 04:37:38', '2024-10-21 04:37:38'),
+(12, 8, 2, 18, 'Iphone 16 pro max - Vàng - 1TB', 48500000, 2, 97000000, '2024-10-23 08:51:22', '2024-10-23 08:51:22'),
+(13, 9, 2, 2, 'Iphone 15 pro max - Trắng - 256GB', 24999000, 3, 74997000, '2024-10-23 09:16:03', '2024-10-23 09:16:03'),
+(14, 9, 2, 10, 'Iphone 15 pro max - Trắng - 512GB', 32299000, 3, 96897000, '2024-10-23 09:16:03', '2024-10-23 09:16:03'),
+(15, 9, 2, 11, 'Iphone 15 pro max - Trắng - 1TB', 40999000, 3, 122997000, '2024-10-23 09:16:03', '2024-10-23 09:16:03'),
+(16, 9, 2, 13, 'Iphone 15 pro max - Đen - 256GB', 26000000, 3, 78000000, '2024-10-23 09:16:03', '2024-10-23 09:16:03'),
+(17, 9, 2, 18, 'Iphone 16 pro max - Vàng - 1TB', 48500000, 1, 48500000, '2024-10-23 09:16:03', '2024-10-23 09:16:03'),
+(18, 10, NULL, 10, 'Iphone 15 pro max - Trắng - 512GB', 32299000, 2, 64598000, '2024-10-23 09:20:48', '2024-10-23 09:20:48'),
+(19, 11, 2, 10, 'Iphone 15 pro max - Trắng - 512GB', 32299000, 1, 32299000, '2024-10-23 09:21:16', '2024-10-23 09:21:16');
 
 -- --------------------------------------------------------
 
@@ -253,6 +286,31 @@ CREATE TABLE `personal_access_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `posts`
+--
+
+CREATE TABLE `posts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `image` text NOT NULL,
+  `name` text NOT NULL,
+  `slug` text NOT NULL,
+  `short_description` text NOT NULL,
+  `content` longtext NOT NULL,
+  `view` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`id`, `image`, `name`, `slug`, `short_description`, `content`, `view`, `created_at`, `updated_at`) VALUES
+(2, 'posts/2024-10-21-05-57-41671633a539ec3.webp', 'Lenovo ra mắt trợ lý thông minh AI Buddy', 'lenovo-ra-mat-tro-ly-thong-minh-ai-buddy', 'Các nhà sản xuất không ngừng nghiên cứu và giới thiệu các giải pháp AI thông minh. Mới đây, Lenovo vừa ra mắt trợ lý thông minh AI Buddy – một bước đột phá trong công nghệ cá nhân hóa. AI Buddy không chỉ hỗ trợ người dùng quản lý công việc hàng ngày mà còn hỗ trợ tốt theo thói quen riêng của mỗi cá nhân.', '<h2><strong>Lenovo ra mắt trợ lý thông minh AI Buddy</strong></h2><p>Tại Hội nghị Công nghệ đổi mới Lenovo năm 2024, nhà sản xuất này đã ra mắt nguyên mẫu trợ lý nhà thông minh mang tên mã là “AI Buddy”. Được thiết kế nhằm cạnh tranh với các sản phẩm nổi tiếng như Echo của Amazon, Lenovo AI Buddy nổi bật với những yếu tố thiết kế độc đáo và tính năng cải tiến, tạo ra sự khác biệt so với các trợ lý nhà thông minh hiện có trên thị trường. Tổng giám đốc điều hành Lenovo, Yang Yuanqing, đã cùng Tổng giám đốc Meta, Mark Zuckerberg, ra mắt AI Buddy và công bố mối quan hệ hợp tác giữa hai công ty để phát triển AI Now – Đây là một trợ lý AI cá nhân cho PC dựa trên mô hình lớn Llama của Meta.</p><figure class=\"image\"><picture><source srcset=\"https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/1-23.jpg.webp 800w, https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/1-23-300x169.jpg.webp 300w, https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/1-23-768x432.jpg.webp 768w\" type=\"image/webp\" sizes=\"(max-width: 800px) 100vw, 800px\"><img src=\"https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/1-23.jpg\" alt=\"AI Buddy\" srcset=\"https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/1-23.jpg 800w, https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/1-23-300x169.jpg 300w, https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/1-23-768x432.jpg 768w\" sizes=\"100vw\" width=\"800\" height=\"450\"></picture></figure><p>Sản phẩm có hình dạng tương tự như một đế sạc MagSafe cỡ lớn có thể gập lại, với màn hình tròn ở trên cùng hiển thị đôi mắt hoạt, hình dưới dạng biểu tượng cảm xúc, giúp mô phỏng cảm xúc và nâng cao khả năng tương tác với người dùng. Biểu cảm này gợi nhớ đến Robot máy tính để bàn Android JoyfulRobotics, được phát triển bởi một cựu nhân viên Xiaomi vào năm ngoái. Ngoài ra, màn hình còn cung cấp các thông tin thiết yếu như thời gian, cập nhật thời tiết, tùy chọn nhạc và hình ảnh cá nhân, hứa hẹn mang đến trải nghiệm công nghệ gần gũi và thân thiện hơn cho người dùng.</p><h2><strong>Thông số kỹ thuật của Lenovo AI Buddy</strong></h2><p>AI Buddy sẽ tận dụng công nghệ tiên tiến này để mang lại trải nghiệm người dùng tự nhiên và dễ thích nghi. Nó sẽ sử dụng AI dựa trên cảm xúc để tùy chỉnh phản hồi, xử lý các tác vụ như lên lịch và nhắc nhở, đồng thời học hỏi theo thời gian. AI Buddy còn được trang bị các cổng USB-A và USB-C, cùng giắc cắm tai nghe ở đế, người dùng muốn kết nối linh hoạt với các thiết bị nhà thông minh. Trợ lý thông mình này có kiểu dáng thanh lịch và tối giản, sản phẩm hoàn toàn phù hợp với triết lý thiết kế của Lenovo. các thông số kỹ thuật chi tiết của thiết bị đang được cập nhật.&nbsp;</p><figure class=\"image\"><picture><source srcset=\"https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/2-23.jpg.webp 800w, https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/2-23-300x169.jpg.webp 300w, https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/2-23-768x432.jpg.webp 768w\" type=\"image/webp\" sizes=\"(max-width: 800px) 100vw, 800px\"><img src=\"https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/2-23.jpg\" alt=\"AI Buddy\" srcset=\"https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/2-23.jpg 800w, https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/2-23-300x169.jpg 300w, https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/2-23-768x432.jpg 768w\" sizes=\"100vw\" width=\"800\" height=\"450\"></picture></figure><p>Về hoạt động, sản phẩm này nổi bật với màn hình xoay có thể điều chỉnh, tương tự như Echo Show 10 của Amazon. Tính năng này làm cho các tương tác trở nên cá nhân và năng động, khi AI Buddy có khả năng theo dõi người dùng và điều chỉnh vị trí theo họ trong không gian. Với sự hỗ trợ của AI Now, AI Buddy giúp người dùng quản lý tác vụ, tối ưu hóa lịch trình làm việc hiệu quả. Đặc biệt, Lenovo cũng chú trọng đến bảo mật dữ liệu, đảm bảo thông tin nhạy cảm được xử lý an toàn và bảo vệ quyền riêng tư của người dùng trong mọi tương tác với AI Buddy.</p><h2><strong>Lenovo cũng đang nghiên cứu trong lĩnh vực AI</strong></h2><p>Tại sự kiện, Lenovo đã gây ấn tượng khi giới thiệu không chỉ AI Buddy mà còn nhiều nguyên mẫu độc đáo khác, trong đó nổi bật là AI Mouse. Sản phẩm này được trang bị nút AI Now chuyên dụng, cho phép tích hợp một cách mượt mà vào hệ sinh thái AI của Lenovo, mở ra nhiều cơ hội tương tác sáng tạo cho người dùng.Với khả năng học hỏi liên tục và cung cấp gợi ý thông minh, AI Buddy hứa hẹn trở thành người bạn đồng hành đáng tin cậy, giúp tối ưu hóa trải nghiệm công nghệ của người dùng.</p><figure class=\"image\"><picture><source srcset=\"https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/3-22.jpg.webp 800w, https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/3-22-300x169.jpg.webp 300w, https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/3-22-768x432.jpg.webp 768w\" type=\"image/webp\" sizes=\"(max-width: 800px) 100vw, 800px\"><img src=\"https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/3-22.jpg\" alt=\"AI Buddy\" srcset=\"https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/3-22.jpg 800w, https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/3-22-300x169.jpg 300w, https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/10/3-22-768x432.jpg 768w\" sizes=\"100vw\" width=\"800\" height=\"450\"></picture></figure><p>Ngoài ra, Lenovo còn trình làng Lenovo Home AI Brain, một giải pháp thông minh thiết kế để quản lý, sắp xếp và bảo vệ những kỷ niệm của gia đình. Với khả năng tạo ra các đoạn phim nổi bật từ những khoảnh khắc đặc biệt, AI Brain không chỉ giúp lưu giữ những ký ức mà còn mang lại trải nghiệm thú vị, giúp gia đình cùng nhau chia sẻ lại những giây phút đáng nhứ. Sự kết hợp giữa công nghệ và cảm xúc trong những sản phẩm này hứa hẹn sẽ mang đến một trải nghiệm ý nghĩa hơn cho người dùng.</p>', 0, '2024-10-21 10:48:58', '2024-10-21 10:58:27');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `products`
 --
 
@@ -262,6 +320,9 @@ CREATE TABLE `products` (
   `slug` text NOT NULL,
   `image` text DEFAULT NULL,
   `description` longtext DEFAULT NULL,
+  `is_new` int(11) NOT NULL DEFAULT 2,
+  `is_hot` int(11) NOT NULL DEFAULT 2,
+  `is_best_seller` int(11) NOT NULL DEFAULT 2,
   `view` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -271,9 +332,9 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `slug`, `image`, `description`, `view`, `created_at`, `updated_at`) VALUES
-(9, 'Iphone 15 pro max', 'iphone-15-pro-max', '[\"products\\/2024-10-15-11-42-39670df2bf87c2b.webp\"]', '<p>Đang cập nhật</p>', 0, '2024-10-15 04:42:39', '2024-10-15 09:33:57'),
-(11, 'Iphone 16 pro max', 'iphone-16-pro-max', '[\"products\\/2024-10-17-03-10-526710c68c4a659.webp\"]', '<p>Updating</p>', 0, '2024-10-17 08:10:52', '2024-10-17 09:33:14');
+INSERT INTO `products` (`id`, `name`, `slug`, `image`, `description`, `is_new`, `is_hot`, `is_best_seller`, `view`, `created_at`, `updated_at`) VALUES
+(9, 'Iphone 15 pro max', 'iphone-15-pro-max', '[\"products\\/2024-10-15-11-42-39670df2bf87c2b.webp\"]', '<p>Đang cập nhật</p>', 2, 2, 2, 0, '2024-10-15 04:42:39', '2024-10-15 09:33:57'),
+(11, 'Iphone 16 pro max', 'iphone-16-pro-max', '[\"products\\/2024-10-17-03-10-526710c68c4a659.webp\"]', '<p>Updating</p>', 2, 2, 2, 0, '2024-10-17 08:10:52', '2024-10-24 09:19:41');
 
 -- --------------------------------------------------------
 
@@ -298,11 +359,11 @@ CREATE TABLE `product_prices` (
 --
 
 INSERT INTO `product_prices` (`id`, `product_id`, `attribute_ids`, `quantity`, `price`, `sale_percent`, `sale_price`, `created_at`, `updated_at`) VALUES
-(2, 9, '[\"6\",\"2\"]', 10, 28000000, 10, 24999000, '2024-10-16 07:04:59', '2024-10-16 08:24:13'),
-(10, 9, '[\"6\",\"3\"]', 10, 35890000, 10, 32299000, '2024-10-16 08:26:50', '2024-10-16 08:26:50'),
-(11, 9, '[\"6\",\"4\"]', 10, 41990000, 2, 40999000, '2024-10-16 08:27:43', '2024-10-16 08:27:52'),
-(13, 9, '[\"7\",\"2\"]', 10, 28000000, 6, 26000000, '2024-10-16 08:28:48', '2024-10-16 08:29:23'),
-(18, 11, '[\"9\",\"4\"]', 10, 49000000, 1, 48500000, '2024-10-17 08:11:27', '2024-10-17 08:11:27');
+(2, 9, '[\"6\",\"2\"]', 0, 28000000, 10, 24999000, '2024-10-16 07:04:59', '2024-10-23 09:17:10'),
+(10, 9, '[\"6\",\"3\"]', 2, 35890000, 10, 32299000, '2024-10-16 08:26:50', '2024-10-23 09:20:48'),
+(11, 9, '[\"6\",\"4\"]', 4, 41990000, 2, 40999000, '2024-10-16 08:27:43', '2024-10-23 09:17:14'),
+(13, 9, '[\"7\",\"2\"]', 4, 28000000, 6, 26000000, '2024-10-16 08:28:48', '2024-10-23 09:17:15'),
+(18, 11, '[\"9\",\"4\"]', 1, 49000000, 1, 48500000, '2024-10-17 08:11:27', '2024-10-23 09:17:09');
 
 -- --------------------------------------------------------
 
@@ -332,6 +393,23 @@ INSERT INTO `stores` (`id`, `address`, `phone`, `email`, `iframe`, `view`, `crea
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `stores1`
+--
+
+CREATE TABLE `stores1` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `address` text NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `iframe` text DEFAULT NULL,
+  `view` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -355,9 +433,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `role_id`, `name`, `email`, `email_verified_at`, `password`, `phone`, `address`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 0, 'admin', 'admin@gmail.com', NULL, '$2y$10$kUBB1fhMTcADPXMUlVhGDuh0FgRwV0bpSfADGJ.FPeLjh0.KfKM0y', NULL, NULL, NULL, '2024-10-09 03:21:16', '2024-10-14 08:24:55'),
-(2, 1, 'admin1', 'admin1@gmail.com', NULL, '$2y$10$KHHanA1bCMtLiVYuuMs/pe2XW1fsXg8WF/Fh2761Pe.MvpriJDgWe', NULL, NULL, NULL, '2024-10-09 03:21:16', '2024-10-14 02:35:32'),
+(2, 0, 'admin1', 'admin1@gmail.com', NULL, '$2y$10$KHHanA1bCMtLiVYuuMs/pe2XW1fsXg8WF/Fh2761Pe.MvpriJDgWe', NULL, NULL, NULL, '2024-10-09 03:21:16', '2024-10-24 08:30:41'),
 (3, 3, 'Phương Linh', 'phlinh@gmail.com', NULL, '$2y$10$kbzKrq2cXF9I4pEPztFnSOOS0zUETUL6dtbtQzU49cKlJ3HomPHWO', '0987587966', 'Hà Nội', NULL, '2024-10-11 09:31:22', '2024-10-17 07:06:34'),
-(4, 2, 'thangvd', 'thangvd@gmail.com', NULL, '$2y$10$nzGkbl5hsRc9jR1RGafBAeFhaS2YOwAlw4xcnD4t6V4pe2.PWbeK2', '0963658744', 'Nguyễn Trãi', NULL, '2024-10-14 01:53:32', '2024-10-14 01:53:32'),
+(4, 3, 'thangvd', 'thangvd@gmail.com', NULL, '$2y$10$nzGkbl5hsRc9jR1RGafBAeFhaS2YOwAlw4xcnD4t6V4pe2.PWbeK2', '0963658744', 'Nguyễn Trãi', NULL, '2024-10-14 01:53:32', '2024-10-24 08:30:54'),
 (5, 3, 'hieuhv', 'hieuhv@gmail.com', NULL, '$2y$10$ObqyI3cRXlz.iY4GWTQa1OGaBWopXP2w.7XlkGU2QvP6DRzqlLS9q', '0965441254', 'Hà Nội', NULL, '2024-10-14 02:08:15', '2024-10-17 07:15:40');
 
 --
@@ -422,6 +500,13 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
 
 --
+-- Indexes for table `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `posts_slug_unique` (`slug`) USING HASH;
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
@@ -438,6 +523,12 @@ ALTER TABLE `product_prices`
 -- Indexes for table `stores`
 --
 ALTER TABLE `stores`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `stores1`
+--
+ALTER TABLE `stores1`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -474,25 +565,25 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `inventories`
 --
 ALTER TABLE `inventories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -501,28 +592,40 @@ ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `product_prices`
 --
 ALTER TABLE `product_prices`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `stores`
 --
 ALTER TABLE `stores`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `stores1`
+--
+ALTER TABLE `stores1`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

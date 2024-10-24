@@ -37,8 +37,8 @@
                                 <div class="col-md-9 col-sm-9 ">
                                     <select class="form-control" name="role_id">
                                         <option value="{{ config('base.role_id.admin') }}" {{ old('role_id') == config('base.role_id.admin') ? 'selected' : '' }}>Admin</option>
-                                        <option value="{{ config('base.role_id.manage') }}" {{ old('role_id') == config('base.role_id.manage') ? 'selected' : '' }}>Quản lý</option>
-                                        <option value="{{ config('base.role_id.staff') }}" {{ old('role_id') == config('base.role_id.staff') ? 'selected' : '' }}>Nhân viên</option>
+                                        {{-- <option value="{{ config('base.role_id.manage') }}" {{ old('role_id') == config('base.role_id.manage') ? 'selected' : '' }}>Quản lý</option>
+                                        <option value="{{ config('base.role_id.staff') }}" {{ old('role_id') == config('base.role_id.staff') ? 'selected' : '' }}>Nhân viên</option> --}}
                                         <option value="{{ config('base.role_id.customer') }}" {{ old('role_id') == config('base.role_id.customer') ? 'selected' : '' }}>Khách hàng</option>
                                     </select>
                                     @if ($errors->has('role_id'))

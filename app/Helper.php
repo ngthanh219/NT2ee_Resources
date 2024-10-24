@@ -95,4 +95,37 @@ class Helper
 
         return $isPaidName;
     }
+
+    public static function getIsNewName($all = false)
+    {
+        $isNewName = config('base.is_new_name');
+
+        if (!$all) {
+            unset($isNewName[config('base.is_new.all')]);
+        }
+
+        return $isNewName;
+    }
+
+    public static function getIsHotName($all = false)
+    {
+        $isHotName = config('base.is_hot_name');
+
+        if (!$all) {
+            unset($isHotName[config('base.is_hot.all')]);
+        }
+
+        return $isHotName;
+    }
+
+    public static function getIsBestSellerName($all = false)
+    {
+        $isBestSellerName = config('base.is_best_seller_name');
+
+        if (!$all) {
+            unset($isBestSellerName[config('base.is_best_seller.all')]);
+        }
+
+        return $isBestSellerName;
+    }
 }

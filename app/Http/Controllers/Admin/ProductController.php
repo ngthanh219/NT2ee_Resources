@@ -23,20 +23,36 @@ class ProductController extends Controller
             $products = Product::orderByDesc('id');
 
             if (isset($request->key)) {
-                $products->where(function ($query) use ($request) {
-                    return $query->where('name', 'like', "%$request->key%");
-                });
+                $products->where('name', 'like', "%$request->key%");
             }
 
             if (isset($request->view) && $request->view != config('base.view.all')) {
                 $products->where('view', $request->view);
             }
 
+            if (isset($request->is_new) && $request->is_new != config('base.is_new.all')) {
+                $products->where('is_new', $request->is_new);
+            }
+
+            if (isset($request->is_hot) && $request->is_hot != config('base.is_hot.all')) {
+                $products->where('is_hot', $request->is_hot);
+            }
+
+            if (isset($request->is_best_seller) && $request->is_best_seller != config('base.is_best_seller.all')) {
+                $products->where('is_best_seller', $request->is_best_seller);
+            }
+
             $products = $products->paginate(config('base.pagination'));
+            $isNewName = Helper::getIsNewName(true);
+            $isHotName = Helper::getIsHotName(true);
+            $isBestSellerName = Helper::getIsBestSellerName(true);
             $compact = [
                 'pageName',
                 'request',
-                'products'
+                'products',
+                'isNewName',
+                'isHotName',
+                'isBestSellerName'
             ];
 
             return view('admin.product.index', compact($compact));
@@ -50,10 +66,16 @@ class ProductController extends Controller
         try {
             $pageName = 'Thêm thông tin';
             $categories = Category::orderBydesc('created_at')->get();
+            $isNewName = Helper::getIsNewName(false);
+            $isHotName = Helper::getIsHotName(false);
+            $isBestSellerName = Helper::getIsBestSellerName(false);
             $compact = [
                 'pageName',
                 'request',
-                'categories'
+                'categories',
+                'isNewName',
+                'isHotName',
+                'isBestSellerName'
             ];
 
             return view('admin.product.create', compact($compact));
@@ -125,6 +147,9 @@ class ProductController extends Controller
             $attributes = Helper::getAttributes();
             $productPrices = ProductPrice::where('product_id', $id)->orderBy('sale_price')->get();
             $productPrice = null;
+            $isNewName = Helper::getIsNewName(false);
+            $isHotName = Helper::getIsHotName(false);
+            $isBestSellerName = Helper::getIsBestSellerName(false);
 
             if (isset($request->product_price_id)) {
                 $productPrice = ProductPrice::findOrFail($request->product_price_id);
@@ -138,7 +163,10 @@ class ProductController extends Controller
                 'categories',
                 'attributes',
                 'productPrices',
-                'productPrice'
+                'productPrice',
+                'isNewName',
+                'isHotName',
+                'isBestSellerName'
             ];
 
             return view('admin.product.edit', compact($compact));
@@ -213,13 +241,11 @@ class ProductController extends Controller
                 ]);
             }
 
-            $product->prices()->delete();
-            $product->categories()->sync([]);
-
             foreach ($product->image as $image) {
                 Helper::removeFile($image);
             }
 
+            $product->categories()->sync([]);
             $product->delete();
             DB::commit();
 
