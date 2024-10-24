@@ -35,6 +35,10 @@
                         @if ($errors->has('password'))
                             <div class="error-text">{{ $errors->first('password') }}</div>
                         @endif
+                        
+                        @if ($errors->has('password'))
+                            <div class="error-text">{{ $errors->first('password') }}</div>
+                        @endif
 
                         <div>
                             <button type="submit" class="btn btn-primary submit">Đăng nhập</button>
@@ -46,6 +50,8 @@
             </div>
         </div>
     </div>
+    
+    @include('admin.layout.noti')
 </body>
 
 </html>
